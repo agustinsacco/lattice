@@ -1,72 +1,117 @@
-# Retrograde Nebula
+<p align="center">
+  <img src="docs/images/lattice_logo.png" alt="Lattice Logo" width="200"/>
+</p>
 
-Retrograde Nebula is a Python-based parametric CAD framework designed for "Design-as-Code" workflows. Built on top of [build123d](https://github.com/gumyr/build123d), it facilitates the creation of parametric 3D models and manages multiple design projects purely through code.
+<h1 align="center">Lattice</h1>
+
+<p align="center">
+  <strong>Agentic CAD for the AI Age</strong><br>
+  A parametric 3D design framework built for AI-assisted workflows
+</p>
+
+---
+
+**Lattice** is a Python-based parametric CAD framework designed exclusively for **agentic coding workflows**. Built on [build123d](https://github.com/gumyr/build123d), Lattice enables you to describe 3D designs in natural language and let AI agents handle the complex CAD implementation.
+
+## Why Agentic-Only?
+
+Traditional CAD tools require deep technical knowledge and manual manipulation. Lattice flips this model:
+
+- **Natural Language Design**: Describe what you want, not how to build it
+- **AI-First Architecture**: The workflow assumes an AI agent is driving the code
+- **Patterns over Primitives**: Reusable patterns make agent output more reliable
+- **Validation Built-In**: Automatic checks catch common CAD mistakes before printing
 
 ## Core Philosophy
 
-*   **Parametric First:** All designs are driven by parameters (dimensions, angles, etc.), allowing for rapid iteration and adjustment.
-*   **Python as DSL:** No static config files for geometry. The design definition *is* the executable Python script.
-*   **Repo-driven Methodology:** Designs are organized as "projects" within the repository, making them easy to version control and share.
+*   **Parametric First:** All designs are driven by parameters (dimensions, angles, etc.), allowing for rapid iteration
+*   **Python as DSL:** No static config files for geometry—the design definition *is* the executable Python script
+*   **Agent-Driven:** Designed to be operated through conversational AI, not manual coding
 
-## Agentic Coding (AI-Assisted Workflow)
+## Getting Started with Agentic Workflows
 
-This project is optimized for AI-assisted development. When working with an AI coding assistant:
+### Required Tooling
 
-### Getting Started
+Lattice is designed to work exclusively through AI-assisted development:
 
-**Always invoke `/cad` at the start of a CAD-related conversation.** This primes the agent with project context and ensures consistent behavior across sessions.
+- **IDE**: [Antigravity](https://antigravity.ai) - The agentic coding environment for Lattice
+- **AI Model**: Gemini 2.0 Flash or higher (Gemini 2.0 Flash Thinking recommended for complex designs)
+- **Extension**: `vscode-stl-viewer` for viewing generated models in-IDE
 
-### How It Works
+### Workflow Overview
 
-The agent automatically determines the appropriate action based on your request:
+**Always start CAD sessions with `/cad`** - This primes the agent with the full context of Lattice's patterns, utilities, and design philosophy.
+
+The agent automatically determines the appropriate action:
 
 | Request Type | Agent Action | Example |
-|--------------|--------------|---------|
-| **Parametric Adjustment** | Runs existing generator with new args | "Make it 80mm wide" |
-| **New Design / Complex Modification** | Creates a new project fork | "I need a phone stand with angled slots" |
+|--------------|--------------|------------|
+| **Parametric Adjustment** | Runs generator with new parameters | "Make it 80mm wide" |
+| **New Design** | Creates new project with full implementation | "I need a phone stand with cable routing" |
+| **Modification** | Edits existing project code | "Add ventilation to the left panel" |
 
 ### Example Prompts
 
-**Simple parametric changes (no code changes):**
+**Simple parametric changes:**
 ```
-@/cad I need a bracket that's 100mm wide and 50mm tall
-```
-```
-@/cad Generate a thicker version - 8mm thickness
+/cad I need a bracket that's 100mm wide and 50mm tall
 ```
 
-**Custom designs (creates a new project):**
+**Complex custom designs:**
 ```
-@/cad I need a wall-mounted tablet holder with cable routing channels
-```
-```
-@/cad Create a keyboard tray with adjustable tilt mechanism
+/cad I need an enclosure for a Raspberry Pi 4. It should have ventilation on top, 
+     mounting tabs on the sides, and snap together without screws.
 ```
 
-**Modifying existing projects:**
+**Project modifications:**
 ```
-@/cad Update the computer_case project - make the standoffs 5mm taller
+/cad Update the computer_case project - make the standoffs 5mm taller
 ```
-```
-@/cad Add ventilation holes to the left panel in the computer_case project
-```
-
-### For Existing Projects
-
-When resuming work on an existing project in a new conversation, still invoke `/cad` - this ensures the agent:
-- Understands the project structure
-- Knows where output files should go
-- Makes the right decision about modifying vs. forking
 
 ## Installation
 
-1.  **Environment Setup**:
-    Ensure you have Python installed (checked with `.python-version`). It is recommended to use a virtual environment.
+### Prerequisites
 
-2.  **Install Dependencies**:
+- **Python 3.12+** (see `.python-version` for exact version)
+- **pip** package manager
+- **Antigravity IDE** with `vscode-stl-viewer` extension (see Getting Started above)
+
+### Quick Setup (Agent-Assisted)
+
+If you're using an AI coding assistant, simply ask:
+```
+Set up this repository for me - create the virtual environment and install dependencies
+```
+
+### Manual Setup
+
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/agustinsacco/lattice.git
+    cd lattice
+    ```
+
+2.  **Create a virtual environment**:
+    ```bash
+    python -m venv .venv
+    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+    ```
+
+3.  **Install dependencies**:
     ```bash
     pip install -r requirements.txt
     ```
+
+4.  **Verify installation**:
+    ```bash
+    python -m cad_engine.generator --help
+    ```
+
+### Troubleshooting
+
+If you encounter issues with `build123d` or OpenCASCADE:
+- Ensure you have the correct Python version
+- On some systems, you may need build tools: `sudo apt install build-essential` (Linux) or Xcode Command Line Tools (macOS)
 
 ## Usage
 
@@ -124,3 +169,11 @@ retrograde-nebula/
 
 *   **Language**: Python
 *   **CAD Kernel**: [build123d](https://build123d.readthedocs.io/en/latest/) (Open CASCADE technology)
+
+## Gallery & Examples
+
+### Raspberry Pi 4 Enclosure
+A complex design featuring port cutouts, mounting standoffs, and ventilation patterns.
+
+![Raspberry Pi 4 Enclosure](docs/images/rpi4_case.png)
+*Prompt: "/cad I need an enclosure for a Raspberry Pi 4. It should have ventilation on top, mounting tabs on the sides, and snap together without screws."*
