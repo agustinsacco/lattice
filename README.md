@@ -5,8 +5,8 @@
 <h1 align="center">Lattice</h1>
 
 <p align="center">
-  <strong>Agentic CAD for the AI Age</strong><br>
-  A parametric 3D design framework built for AI-assisted workflows
+  <strong>Design 3D parts with natural language.</strong><br>
+  Lattice is an agentic CAD framework that turns prompts into printable STL files.
 </p>
 
 ---
