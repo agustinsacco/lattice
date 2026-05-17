@@ -1,6 +1,6 @@
 "use client";
 
-import { Star, Database, ShieldAlert } from "lucide-react";
+import { Star, ShieldAlert } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,12 +17,10 @@ import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/client/hooks/use-auth";
-import { MemoryModal } from "@/client/components/memory/memory-modal";
 
 export function UserNav() {
   const { user, logOut, isLoading } = useAuth();
   const router = useRouter();
-  const [isMemoryModalOpen, setIsMemoryModalOpen] = useState(false);
 
   if (isLoading) {
     return null; // Or a loading spinner
@@ -43,59 +41,46 @@ export function UserNav() {
   }
 
   return (
-    <>
-      <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 hover:bg-transparent">
-            <Avatar className="h-10 w-10">
-              <AvatarImage
-                src={user.user_metadata?.avatar_url || user.user_metadata?.picture}
-                alt="User avatar"
-              />
-              <AvatarFallback className="bg-primary text-primary-foreground text-lg font-semibold">
-                {user.email?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56 p-2" align="end" forceMount>
-          <DropdownMenuLabel className="font-normal p-0">
-            <div className="flex flex-col items-center space-y-1 p-2 text-center">
-              <p className="text-sm font-medium leading-none">
-                {user.user_metadata?.full_name || user.user_metadata?.name || user.email}
-              </p>
-              <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onSelect={(e) => {
-                e.preventDefault();
-                setIsMemoryModalOpen(true);
-              }}
-            >
-              <Database className="mr-2 h-4 w-4" />
-              <span>Memory</span>
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 hover:bg-transparent">
+          <Avatar className="h-10 w-10">
+            <AvatarImage
+              src={user.user_metadata?.avatar_url || user.user_metadata?.picture}
+              alt="User avatar"
+            />
+            <AvatarFallback className="bg-primary text-primary-foreground text-lg font-semibold">
+              {user.email?.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56 p-2" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal p-0">
+          <div className="flex flex-col items-center space-y-1 p-2 text-center">
+            <p className="text-sm font-medium leading-none">
+              {user.user_metadata?.full_name || user.user_metadata?.name || user.email}
+            </p>
+            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          {user.email === "saccoagustin@hotmail.com" && (
+            <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/admin")}>
+              <ShieldAlert className="mr-2 h-4 w-4" />
+              <span>Admin Dashboard</span>
             </DropdownMenuItem>
-            {user.email === "saccoagustin@hotmail.com" && (
-              <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/admin")}>
-                <ShieldAlert className="mr-2 h-4 w-4" />
-                <span>Admin Dashboard</span>
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/settings")}>
-              Settings
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer" onClick={logOut}>
-            Log out
+          )}
+          <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/settings")}>
+            Settings
           </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <MemoryModal open={isMemoryModalOpen} onOpenChange={setIsMemoryModalOpen} />
-    </>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="cursor-pointer" onClick={logOut}>
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
