@@ -42,7 +42,7 @@ export function UserSessionsSection() {
           <div>
             <h2 className="text-3xl font-bold mb-4">Your Recent Sessions</h2>
             <p className="text-muted-foreground text-lg max-w-2xl">
-              Continue where you left off with your PDF analysis and conversations.
+              Continue where you left off with your CAD workspaces and design sessions.
             </p>
           </div>
         </div>
@@ -74,7 +74,7 @@ export function UserSessionsSection() {
               </div>
 
               <h3 className="text-xl font-semibold mb-2 line-clamp-1 group-hover:text-primary transition-colors">
-                {session.originalFilename || "Untitled Session"}
+                {session.name || "Untitled Project"}
               </h3>
 
               <div className="flex items-center text-sm text-muted-foreground mt-4" suppressHydrationWarning>

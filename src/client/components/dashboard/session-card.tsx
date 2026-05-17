@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { 
-  FileText, 
+  Box, 
   MoreVertical, 
   Trash2, 
   ArrowRight, 
   Calendar, 
-  Database,
+  Cpu,
   Loader2
 } from "lucide-react";
 import { 
@@ -44,8 +44,6 @@ export function SessionCard({ session }: SessionCardProps) {
     }
   };
 
-  const fileSizeMB = (session.fileSize / (1024 * 1024)).toFixed(1);
-
   return (
     <Link 
       href={`/session/${session.id}`}
@@ -56,7 +54,7 @@ export function SessionCard({ session }: SessionCardProps) {
       
       <div className="flex items-start justify-between mb-6 relative">
         <div className="p-4 bg-gray-50 rounded-2xl group-hover:bg-yellow-500 group-hover:text-black transition-all duration-300">
-          <FileText className="w-8 h-8" />
+          <Box className="w-8 h-8" />
         </div>
 
         <DropdownMenu>
@@ -80,7 +78,7 @@ export function SessionCard({ session }: SessionCardProps) {
 
       <div className="space-y-2 mb-6">
         <Typography variant="h4" className="line-clamp-1 group-hover:text-yellow-600 transition-colors">
-          {session.originalFilename}
+          {session.name || "Untitled Project"}
         </Typography>
         <div className="flex items-center gap-3 text-sm text-gray-400">
           <span className="flex items-center gap-1">
@@ -91,26 +89,24 @@ export function SessionCard({ session }: SessionCardProps) {
           </span>
           <span className="w-1 h-1 bg-gray-200 rounded-full" />
           <span className="flex items-center gap-1">
-            <Database className="w-3.5 h-3.5" />
-            <Typography variant="muted" as="span">{fileSizeMB} MB</Typography>
+            <Cpu className="w-3.5 h-3.5" />
+            <Typography variant="muted" as="span">
+              {(session.credits_used ?? 0).toFixed(0)} credits
+            </Typography>
           </span>
         </div>
       </div>
 
       <div className="flex items-center justify-between pt-6 border-t border-gray-50 mt-auto">
         <div className="flex items-center gap-2">
-          <div className="flex -space-x-2">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="w-7 h-7 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-400">
-                P{i}
-              </div>
-            ))}
-          </div>
-          <Typography variant="tiny">{session.numPages} pages</Typography>
+          <Badge variant="outline" className="border-gray-200 text-xs py-1 rounded-lg">
+            CAD Design
+          </Badge>
+          <Typography variant="tiny">Cost: ${(session.cost_usd ?? 0).toFixed(2)}</Typography>
         </div>
 
         <div className="flex items-center text-yellow-500 font-bold text-sm group-hover:translate-x-1 transition-transform">
-          Open
+          Open Canvas
           <ArrowRight className="w-4 h-4 ml-1" />
         </div>
       </div>

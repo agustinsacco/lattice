@@ -2,7 +2,6 @@ import { Server } from "socket.io";
 import { getMessages, replaceMessages, getSession } from "@/server/services/session.service";
 import { getUserCredits } from "@/server/services/credit.service";
 import { ChatMessage, TextPart, ImagePart, FilePart, ToolCallPart, ToolResultPart } from "@/common/types";
-import { getAgent } from "@/server/agent/vibe.agent";
 
 console.log("[AgentService] Module loaded. getSession is:", typeof getSession);
 import {

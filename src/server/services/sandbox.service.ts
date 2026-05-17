@@ -118,7 +118,7 @@ export class SandboxService {
 
       // 6. Create the Pod
       console.log(`[SandboxService] Creating Pod ${podName} in namespace ${namespace}`);
-      await this.k8sApi.createNamespacedPod(namespace, pod);
+      await this.k8sApi.createNamespacedPod({ namespace, body: pod });
 
       // 7. Wait for Pod to enter "Running" phase
       await this.waitForPodRunning(podName, namespace);
@@ -144,8 +144,8 @@ export class SandboxService {
   private async waitForPodRunning(podName: string, namespace: string, timeoutMs: number = 30000) {
     const start = Date.now();
     while (Date.now() - start < timeoutMs) {
-      const pod = await this.k8sApi.readNamespacedPodStatus(podName, namespace);
-      const phase = pod.body.status?.phase;
+      const pod = await this.k8sApi.readNamespacedPodStatus({ name: podName, namespace });
+      const phase = pod.status?.phase;
       if (phase === "Running") {
         return;
       }
@@ -244,7 +244,7 @@ export class SandboxService {
         console.error("[SandboxService] STL upload failed:", uploadError.message);
       } else {
         console.log(`[SandboxService] STL model saved successfully.`);
-        io.to(sessionId).emit("pdfUpdated"); // Trigger reloads on client
+        io.to(sessionId).emit("modelUpdated"); // Trigger reloads on client
       }
     }
   }
@@ -252,14 +252,14 @@ export class SandboxService {
   private async cleanupPod(podName: string, namespace: string, sessionId: string) {
     console.log(`[SandboxService] Cleaning up Pod ${podName}`);
     try {
-      await this.k8sApi.deleteNamespacedPod(podName, namespace);
+      await this.k8sApi.deleteNamespacedPod({ name: podName, namespace });
     } catch (e) {
       // Already deleted or not found
     }
 
     try {
       const networkingApi = this.kc.makeApiClient(k8s.NetworkingV1Api);
-      await networkingApi.deleteNamespacedNetworkPolicy(`isolate-${sessionId.substring(0, 8)}`, namespace);
+      await networkingApi.deleteNamespacedNetworkPolicy({ name: `isolate-${sessionId.substring(0, 8)}`, namespace });
     } catch (e) {
       // Not found
     }
@@ -293,7 +293,7 @@ export class SandboxService {
       },
     };
     try {
-      await networkingApi.createNamespacedNetworkPolicy("lattice-sandboxes", policy);
+      await networkingApi.createNamespacedNetworkPolicy({ namespace: "lattice-sandboxes", body: policy });
     } catch (e) {
       console.warn("[SandboxService] Failed to apply NetworkPolicy. Proceeding without isolation.");
     }

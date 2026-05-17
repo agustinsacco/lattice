@@ -12,7 +12,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
             <p className="text-gray-600 leading-relaxed">
-              Welcome to Lattice ("we," "our," or "us"). By accessing or using our website and AI-powered PDF assistant
+              Welcome to Lattice ("we," "our," or "us"). By accessing or using our website and AI-powered agentic 3D modeling
               services (collectively, the "Service"), you agree to be bound by these Terms and Conditions ("Terms"). If
               you do not agree to these Terms, please do not use our Service.
             </p>
@@ -21,9 +21,9 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Description of Service</h2>
             <p className="text-gray-600 leading-relaxed">
-              Lattice provides an AI-powered tool that assists users in reading, understanding, filling out, and
-              managing PDF documents. The Service utilizes large language models (LLMs) to process and analyze the
-              content of your documents.
+              Lattice provides an AI-powered tool that assists users in designing, constructing, and managing 3D models.
+              The Service utilizes sandboxed coding agents to generate, execute, and validate Python CAD code (build123d)
+              and output high-quality STL models.
             </p>
           </section>
 

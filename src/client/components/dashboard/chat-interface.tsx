@@ -10,11 +10,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/client/components/ui/table";
 import { useCreditTransactions, useCredits } from "@/client/hooks/use-credits";
 import { toast } from "sonner";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCreditsModal } from "@/client/providers/credits-modal";
 import { useAttachments } from "@/client/hooks/use-attachments";
 import { useChatMessages } from "@/client/hooks/use-chat-messages";
-import { PDFChatMessage } from "./chat/chat-message";
+import { LatticeChatMessage } from "./chat/chat-message";
 import { ProgressiveThinking } from "./chat/thinking-indicator";
 import { Typography } from "@/client/components/ui/typography";
 import { Badge } from "@/client/components/ui/badge";
@@ -63,55 +63,12 @@ export function ChatInterface({
   const { data: credits, isLoading: isLoadingCredits } = useCredits();
   const { openModal } = useCreditsModal();
 
-  // Restore mutation
-  const restoreMutation = useMutation({
-    mutationFn: async ({ targetVersion }: { targetVersion: number }) => {
-      if (!sessionId) throw new Error("No session ID");
-      const response = await fetch(`/api/sessions/${sessionId}/restore`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetVersion }),
-      });
-      if (!response.ok) throw new Error("Failed to restore session");
-      return response.json();
-    },
-    onSuccess: () => {
-      toast.success("Session restored successfully!");
-      queryClient.invalidateQueries({ queryKey: ["messages", sessionId] });
-      queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
-      queryClient.invalidateQueries({ queryKey: ["credits"] });
-    },
-    onError: (error) => {
-      toast.error("Failed to restore session");
-      console.error("Restore error:", error);
-    },
-  });
-
-  const handleRestore = (versionNumber: number) => {
-    if (
-      confirm(
-        `Restore to this version? This will delete all messages and PDF edits after this point. This action cannot be undone.`
-      )
-    ) {
-      restoreMutation.mutate({ targetVersion: versionNumber });
-    }
-  };
-
   // Auto-scroll to bottom when new messages are added
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [processedMessages, isLoading]);
-
-  // Auto-trigger "Read PDF" if no messages and socket is ready
-  const hasAutoTriggered = useRef(false);
-  useEffect(() => {
-    if (isSocketReady && !isLoading && processedMessages.length === 0 && !hasAutoTriggered.current) {
-      hasAutoTriggered.current = true;
-      onSendMessage("I have uploaded a PDF. Please read it and tell me about its fillable fields.");
-    }
-  }, [isSocketReady, isLoading, processedMessages.length, onSendMessage]);
 
   const handleSendMessage = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -297,28 +254,28 @@ export function ChatInterface({
                     <MessageSquare size={40} className="text-brand-primary opacity-50" />
                   </div>
                   <Typography variant="h3" className="mb-2">
-                    {isLoading ? "Analyzing your PDF" : "Ready to vibe"}
+                    {isLoading ? "Spinning up sandbox..." : "Ready to Model"}
                   </Typography>
                   <Typography variant="muted" className="mb-8 max-w-[280px] mx-auto">
                     {isLoading 
-                      ? "Please wait while the AI agent reads your document and identifies fields."
-                      : "Start the conversation or let the AI guide you through the document."}
+                      ? "Please wait while the AI agent initializes the secure container environment."
+                      : "Describe what you want to build (e.g., 'A customized mounting bracket' or 'A hexagonal pen cup') to start modeling."}
                   </Typography>
                   <div className="flex items-center justify-center gap-2">
                     {isLoading ? (
                       <Badge variant="brand" className="px-4 py-2 gap-2 h-auto text-sm">
                         <Loader2 size={18} className="animate-spin" />
-                        Scanning Document...
+                        Initializing Sandbox...
                       </Badge>
                     ) : (
                       <Button
                         onClick={() =>
-                          onSendMessage("I have uploaded a PDF. Please read it and tell me about its fillable fields.")
+                          onSendMessage("Design a mounting bracket for a 2020 V-slot extrusion with a 5mm hole and 3mm fillets.")
                         }
                         variant="brand"
                         className="h-12 px-8 rounded-xl"
                       >
-                        Read PDF
+                        Try a Bracket Design
                       </Button>
                     )}
                   </div>
@@ -326,10 +283,9 @@ export function ChatInterface({
               ) : (
                 <>
                   {processedMessages.map((msg, index) => (
-                    <PDFChatMessage
+                    <LatticeChatMessage
                       key={msg.id}
                       message={msg}
-                      onRestore={handleRestore}
                       onImageClick={setSelectedImage}
                       onRetry={handleRetry}
                       isLastMessage={index === processedMessages.length - 1}
@@ -393,7 +349,7 @@ export function ChatInterface({
                     isProcessingAttachments
                       ? "Processing image..."
                       : isSocketReady
-                        ? "Ask to fill your PDF (paste or drag images)"
+                        ? "Describe your 3D design concept (paste or drag reference images)"
                         : "Connecting..."
                   }
                   className="w-full bg-muted/50 min-h-[80px] max-h-48 resize-none"
@@ -431,7 +387,7 @@ export function ChatInterface({
           <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
             <MessageSquare size={24} className="text-muted-foreground" />
           </div>
-          <p className="text-center">Upload a PDF to start chatting</p>
+          <p className="text-center">Select or create a design session to start modeling</p>
         </div>
       )}
 

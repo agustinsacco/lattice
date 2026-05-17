@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
-import { FileText, Sparkles, Zap, Lock, LogIn, Brain, Image as ImageIcon, Globe } from "lucide-react";
+import { Sparkles, Zap, Lock, LogIn, Brain, Box, Hammer, Code, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/client/hooks/use-auth";
 import { Button } from "@/client/components/ui/button";
 import { Typography } from "@/client/components/ui/typography";
@@ -15,47 +13,18 @@ import { Badge } from "@/client/components/ui/badge";
 export default function Home() {
   const { user } = useAuth();
   const router = useRouter();
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleFileUpload = async (file: File) => {
-    if (!user) {
-      router.push("/login?redirect_to=/&upload_attempt=true");
-      return;
-    }
-
-    setUploadError(null);
-    setIsLoading(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.status === 401) {
-        return router.push("/login");
-      }
-
-      if (!response.ok) {
-        throw new Error("Failed to upload PDF");
-      }
-
-      const { sessionId } = await response.json();
-      router.push(`/session/${sessionId}`);
-    } catch (error) {
-      setUploadError(error instanceof Error ? error.message : "Upload failed");
-    } finally {
-      setIsLoading(false);
+  const handleStartDesigning = () => {
+    if (user) {
+      router.push("/dashboard");
+    } else {
+      router.push("/login?redirect_to=/dashboard");
     }
   };
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Hero + Upload Section */}
+      {/* Hero + CTA Section */}
       <Section spacing="large" className="relative overflow-visible">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-yellow-200/40 via-white to-white" />
 
@@ -75,15 +44,15 @@ export default function Home() {
             </Typography>
             
             <Typography variant="lead" className="max-w-xl mx-auto">
-              While others just generate text, Lattice builds real 3D models (STLs) through natural conversation with a coding agent.
+              Lattice builds real watertight 3D models (STLs) through natural conversation with a powerful coding agent. No CAD experience required.
             </Typography>
           </div>
 
           {/* Start Session Button */}
           <div className="relative z-10 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
-            <Button size="lg" variant="brand" className="h-14 px-8 text-lg rounded-2xl" onClick={() => router.push('/session/new')}>
+            <Button size="lg" variant="brand" className="h-14 px-8 text-lg rounded-2xl" onClick={handleStartDesigning}>
               <Sparkles className="w-5 h-5 mr-2" />
-              Start Modeling Now
+              Start Designing Now
             </Button>
           </div>
         </Container>
@@ -95,29 +64,29 @@ export default function Home() {
           {/* Feature List */}
           <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000 delay-300">
             <Typography variant="h2">
-              Chat with your documents
+              Agentic 3D Modeling Redefined
             </Typography>
             <div className="grid gap-8">
               {[
                 {
                   icon: Brain,
-                  title: "Smarter The More You Use It",
-                  desc: "We securely save and reuse your personal info. Our agent learns your details, saving you more time with every form.",
+                  title: "Natural Language to STL",
+                  desc: "Describe your ideas in plain English. Our coding agent automatically writes industry-grade build123d Python script to construct the exact geometry.",
                 },
                 {
-                  icon: ImageIcon,
-                  title: "Context Via Screenshots",
-                  desc: "Have your info on another document? Upload a screenshot and our agent will magically extract and map the data for you.",
+                  icon: Hammer,
+                  title: "Iterative Prototyping",
+                  desc: "Refine your designs in natural conversation. Ask the agent to add fillets, apply chamfers, modify tolerances, or cut mounting holes on the fly.",
                 },
                 {
-                  icon: Globe,
-                  title: "Web-Enabled Research",
-                  desc: "Stuck on a tricky question? Lattice searches the web to find the exact information you need and guides you through it.",
+                  icon: ShieldCheck,
+                  title: "Isolated Kubernetes Sandboxes",
+                  desc: "Every design workspace executes inside a secure, ephemeral container equipped with OpenCascade, Python CAD libraries, and mesh validation tools.",
                 },
                 {
-                  icon: Zap,
-                  title: "Pixel-Perfect Writing",
-                  desc: "We magically map coordinates and write directly on flat, scanned PDFs where traditional editors completely fail.",
+                  icon: Code,
+                  title: "Inspect & Edit Code",
+                  desc: "Lattice shows you the exact Python CAD code generated by the agent. You have total control over the math and constructive solid geometry.",
                 },
               ].map((item, i) => (
                 <div key={i} className="flex gap-5">
@@ -141,32 +110,32 @@ export default function Home() {
               {/* File header */}
               <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-                    <FileText className="h-6 w-6 text-red-500" />
+                  <div className="w-10 h-10 rounded-xl bg-yellow-50 flex items-center justify-center">
+                    <Box className="h-6 w-6 text-yellow-600" />
                   </div>
                   <div className="text-left">
-                    <Typography variant="small" className="font-bold">Rental_Agreement.pdf</Typography>
-                    <Typography variant="tiny">Ready to vibe</Typography>
+                    <Typography variant="small" className="font-bold">Bracket_Design.stl</Typography>
+                    <Typography variant="tiny">Watertight Mesh</Typography>
                   </div>
                 </div>
-                <Badge variant="success">Active</Badge>
+                <Badge variant="success">Ready</Badge>
               </div>
 
               {/* Chat bubbles (decorative) */}
-              <div className="space-y-3 opacity-40 select-none">
+              <div className="space-y-3 opacity-60 select-none">
                 <div className="flex justify-end">
                   <div className="bg-gray-100 rounded-2xl rounded-tr-sm px-4 py-2.5 text-[11px] font-medium text-gray-700 max-w-[85%]">
-                    Here's a screenshot of my W-2. Can you fill this out?
+                    I need a custom mounting bracket for a 2020 extrusion with a 5mm hole.
                   </div>
                 </div>
                 <div className="flex justify-start">
                   <div className="bg-yellow-400 rounded-2xl rounded-tl-sm px-4 py-2.5 text-[11px] font-medium text-gray-900 max-w-[85%]">
-                    Done! I've extracted your details. I also searched the web for your state's tax code.
+                    Done! I've executed a build123d script in the sandbox to build the bracket and generated the 3D STL model.
                   </div>
                 </div>
                 <div className="flex justify-end">
                   <div className="bg-gray-100 rounded-2xl rounded-tr-sm px-4 py-2.5 text-[11px] font-medium text-gray-700 max-w-[85%]">
-                    Perfect. Use my saved address for the rest.
+                    Can you chamfer the top edges by 2mm?
                   </div>
                 </div>
               </div>
@@ -178,9 +147,9 @@ export default function Home() {
                     <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto">
                       <Lock className="w-6 h-6 text-brand-secondary" />
                     </div>
-                    <Typography variant="h4">Login to start chatting</Typography>
+                    <Typography variant="h4">Login to start modeling</Typography>
                     <Typography variant="small" className="text-gray-500 leading-relaxed">
-                      Receive your free credits and start filling forms in seconds.
+                      Receive free CAD sandbox credits and start creating 3D models in seconds.
                     </Typography>
                     <Button asChild variant="brand" className="w-full h-12 rounded-xl">
                       <Link href="/login">
@@ -197,7 +166,7 @@ export default function Home() {
       </Section>
 
       {/* Minimal Footer */}
-      <footer className="border-t border-gray-100 py-8 px-4">
+      <footer className="border-t border-gray-100 py-8 px-4 bg-white">
         <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-400">
           <div className="flex items-center gap-6">
             <Link href="/terms" className="hover:text-gray-900 transition-colors">Terms</Link>

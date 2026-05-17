@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 const thinkingPhrases = [
-  "Looking at your PDF...",
-  "Reading the document...",
-  "Thinking about the fields...",
-  "Vibing with the data...",
-  "Cooking up a response...",
-  "Connecting the dots...",
+  "Spinning up container sandbox...",
+  "Analyzing your prompt...",
+  "Generating 3D CAD code...",
+  "Rendering geometry in OpenCascade...",
+  "Verifying STL watertightness...",
+  "Calculating object volume...",
 ];
 
 export function ProgressiveThinking() {

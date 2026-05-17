@@ -53,22 +53,4 @@ export const sendMessage = async (
   return data;
 };
 
-export async function fetchSessionVersions(sessionId: string): Promise<SessionVersion[]> {
-  const response = await fetch(`/api/sessions/${sessionId}/versions`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch session versions.");
-  }
-  return response.json();
-}
 
-export async function restoreSessionVersion(sessionId: string, targetVersion: number): Promise<{ success: boolean }> {
-  const response = await fetch(`/api/sessions/${sessionId}/restore`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ targetVersion }),
-  });
-  if (!response.ok) {
-    throw new Error("Failed to restore session.");
-  }
-  return response.json();
-}

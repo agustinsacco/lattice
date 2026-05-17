@@ -1,14 +1,18 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
@@ -19,13 +23,32 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/client/*": ["./src/client/*"],
-      "@/server/*": ["./src/server/*"],
-      "@/common/*": ["./src/common/*"],
-      "@/components/*": ["./src/client/components/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@/client/*": [
+        "./src/client/*"
+      ],
+      "@/server/*": [
+        "./src/server/*"
+      ],
+      "@/common/*": [
+        "./src/common/*"
+      ],
+      "@/components/*": [
+        "./src/client/components/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", ".next/dev/types/**/*.ts"],
-  "exclude": ["node_modules", "scratch"]
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "scratch"
+  ]
 }

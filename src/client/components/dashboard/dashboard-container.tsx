@@ -6,12 +6,13 @@ import {
   LayoutGrid, 
   List, 
   Plus, 
-  FileText, 
+  Box, 
   MessageSquare, 
   Clock, 
   SearchX,
   ArrowUpRight,
-  Filter
+  Filter,
+  Loader2
 } from "lucide-react";
 import { Input } from "@/client/components/ui/input";
 import { Button } from "@/client/components/ui/button";
@@ -22,11 +23,9 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from "@/client/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/client/components/ui/tabs";
 import { useSessions } from "@/client/hooks/use-sessions";
 import { SessionCard } from "./session-card";
 import { SessionTableRow } from "./session-table-row";
-import PdfDropzone from "@/client/components/pdf-dropzone";
 import { useRouter } from "next/navigation";
 import { cn } from "@/client/utils";
 import { User } from "@supabase/supabase-js";
@@ -38,28 +37,31 @@ export function DashboardContainer({ user }: { user: User | null }) {
   const { sessions, isLoading } = useSessions();
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [isUploadOpen, setIsUploadOpen] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [newSessionName, setNewSessionName] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
 
   const filteredSessions = useMemo(() => {
     if (!sessions) return [];
     return sessions.filter((s) => 
-      s.originalFilename.toLowerCase().includes(searchQuery.toLowerCase())
+      s.name.toLowerCase().includes(searchQuery.toLowerCase())
     ).sort((a, b) => b.updatedAt - a.updatedAt);
   }, [sessions, searchQuery]);
 
-  const handleFileUpload = async (file: File) => {
-    setUploadError(null);
-    setIsUploading(true);
+  const handleCreateSession = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    setCreateError(null);
+    setIsCreating(true);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/upload", {
+      const response = await fetch("/api/sessions", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: newSessionName.trim() || "Untitled Project" }),
       });
 
       if (response.status === 401) {
@@ -67,15 +69,15 @@ export function DashboardContainer({ user }: { user: User | null }) {
       }
 
       if (!response.ok) {
-        throw new Error("Failed to upload PDF");
+        throw new Error("Failed to create design session");
       }
 
-      const { sessionId } = await response.json();
-      router.push(`/session/${sessionId}`);
+      const session = await response.json();
+      router.push(`/session/${session.id}`);
     } catch (error) {
-      setUploadError(error instanceof Error ? error.message : "Upload failed");
+      setCreateError(error instanceof Error ? error.message : "Creation failed");
     } finally {
-      setIsUploading(false);
+      setIsCreating(false);
     }
   };
 
@@ -97,27 +99,54 @@ export function DashboardContainer({ user }: { user: User | null }) {
             Welcome back{user?.user_metadata?.full_name ? `, ${user.user_metadata.full_name.split(" ")[0]}` : ""}!
           </Typography>
           <Typography variant="muted" className="mt-1">
-            Manage your PDF documents and AI conversations
+            Manage your Generative CAD modeling workspace and AI agents
           </Typography>
         </div>
 
         <div className="flex items-center gap-3">
-          <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-xl px-6 h-12 transition-all shadow-lg shadow-yellow-500/20 hover:shadow-yellow-500/40">
                 <Plus className="w-5 h-5 mr-2" />
-                Upload New PDF
+                New Design Project
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px] rounded-3xl p-8">
+            <DialogContent className="sm:max-w-[500px] rounded-3xl p-8 bg-white border border-gray-100">
               <DialogHeader>
-                <DialogTitle className="text-2xl font-bold text-center mb-4">Upload your PDF</DialogTitle>
+                <DialogTitle className="text-2xl font-bold text-center mb-4">Create New Design Project</DialogTitle>
               </DialogHeader>
-              <PdfDropzone 
-                onFileUpload={handleFileUpload} 
-                uploadError={uploadError} 
-                isLoading={isUploading} 
-              />
+              <form onSubmit={handleCreateSession} className="space-y-6">
+                <div className="space-y-2">
+                  <label htmlFor="projectName" className="text-sm font-medium text-gray-700">Project Name</label>
+                  <Input 
+                    id="projectName"
+                    placeholder="e.g. Hexagonal Pen Cup" 
+                    value={newSessionName}
+                    onChange={(e) => setNewSessionName(e.target.value)}
+                    disabled={isCreating}
+                    className="h-12 bg-gray-50/50 border-gray-100 rounded-xl"
+                  />
+                </div>
+
+                {createError && (
+                  <p className="text-sm text-red-500 text-center">{createError}</p>
+                )}
+
+                <Button 
+                  type="submit" 
+                  disabled={isCreating}
+                  className="w-full h-12 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-xl flex items-center justify-center gap-2"
+                >
+                  {isCreating ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Creating Workspace...
+                    </>
+                  ) : (
+                    "Initialize CAD Workspace"
+                  )}
+                </Button>
+              </form>
             </DialogContent>
           </Dialog>
         </div>
@@ -127,10 +156,10 @@ export function DashboardContainer({ user }: { user: User | null }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
           <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
-            <FileText className="w-6 h-6" />
+            <Box className="w-6 h-6" />
           </div>
           <div>
-            <Typography variant="muted">Total Files</Typography>
+            <Typography variant="muted">Total Models</Typography>
             <Typography variant="h3">{stats.total}</Typography>
           </div>
         </div>
@@ -159,7 +188,7 @@ export function DashboardContainer({ user }: { user: User | null }) {
             </div>
             <div>
               <Typography variant="muted">Smart Filter</Typography>
-              <Typography variant="small" className="font-bold">All Files</Typography>
+              <Typography variant="small" className="font-bold">All Models</Typography>
             </div>
           </div>
           <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-yellow-500 transition-all" />
@@ -173,7 +202,7 @@ export function DashboardContainer({ user }: { user: User | null }) {
           <div className="relative w-full sm:max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input 
-              placeholder="Search by filename..." 
+              placeholder="Search by project name..." 
               className="pl-10 h-11 bg-gray-50/50 border-gray-100 focus:bg-white transition-all rounded-xl"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -220,10 +249,10 @@ export function DashboardContainer({ user }: { user: User | null }) {
                 <table className="w-full">
                   <thead>
                     <tr className="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-50">
-                      <th className="pb-4 pl-4">Filename</th>
+                      <th className="pb-4 pl-4">Project Name</th>
                       <th className="pb-4">Last Activity</th>
-                      <th className="pb-4">Size</th>
-                      <th className="pb-4">Pages</th>
+                      <th className="pb-4">Credits Used</th>
+                      <th className="pb-4">Cost</th>
                       <th className="pb-4 pr-4 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -240,16 +269,16 @@ export function DashboardContainer({ user }: { user: User | null }) {
               <div className="p-6 bg-gray-50 rounded-full mb-6">
                 <SearchX className="w-12 h-12 text-gray-300" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900">No sessions found</h3>
+              <h3 className="text-xl font-semibold text-gray-900">No design sessions found</h3>
               <p className="text-gray-500 max-w-xs mt-2">
-                {searchQuery ? `We couldn't find any sessions matching "${searchQuery}"` : "Get started by uploading your first PDF document."}
+                {searchQuery ? `We couldn't find any design sessions matching "${searchQuery}"` : "Get started by initializing your first Generative CAD design workspace."}
               </p>
               {!searchQuery && (
                 <Button 
-                  onClick={() => setIsUploadOpen(true)}
+                  onClick={() => setIsCreateOpen(true)}
                   className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-xl"
                 >
-                  Upload New PDF
+                  Create New Workspace
                 </Button>
               )}
             </div>

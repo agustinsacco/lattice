@@ -14,7 +14,7 @@ export default function PrivacyPage() {
             <p className="text-gray-600 leading-relaxed">
               At Lattice ("we," "our," or "us"), we respect your privacy and are committed to protecting your personal
               data. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you
-              use our AI-powered PDF assistant service.
+              use our AI-powered agentic 3D modeling service.
             </p>
           </section>
 
@@ -27,10 +27,10 @@ export default function PrivacyPage() {
                 Service, such as your name, email address, and payment information.
               </p>
 
-              <h3 className="text-xl font-semibold text-gray-900">Document Data</h3>
+              <h3 className="text-xl font-semibold text-gray-900">Project and Geometry Data</h3>
               <p className="text-gray-600 leading-relaxed">
-                When you upload PDF documents to Lattice, we collect and process the content of these documents to
-                provide the Service. We treat your documents as confidential.
+                When you create 3D modeling projects or input design prompts, we collect and process your inputs and geometry
+                data to provide the Service. We treat your project files as confidential.
               </p>
 
               <h3 className="text-xl font-semibold text-gray-900">Usage Data</h3>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { 
-  FileText, 
+  Box, 
   MoreVertical, 
   Trash2, 
   ExternalLink,
@@ -39,17 +39,15 @@ export function SessionTableRow({ session }: SessionTableRowProps) {
     }
   };
 
-  const fileSizeMB = (session.fileSize / (1024 * 1024)).toFixed(1);
-
   return (
     <tr className="group hover:bg-gray-50/50 transition-all cursor-pointer relative">
       <td className="py-4 pl-4">
         <Link href={`/session/${session.id}`} className="flex items-center gap-3">
           <div className="p-2 bg-gray-50 rounded-lg text-gray-400 group-hover:bg-yellow-100 group-hover:text-yellow-600 transition-all">
-            <FileText className="w-5 h-5" />
+            <Box className="w-5 h-5" />
           </div>
           <span className="font-semibold text-gray-900 group-hover:text-yellow-600 transition-colors">
-            {session.originalFilename}
+            {session.name || "Untitled Project"}
           </span>
         </Link>
       </td>
@@ -59,10 +57,10 @@ export function SessionTableRow({ session }: SessionTableRowProps) {
         </span>
       </td>
       <td className="py-4">
-        <span className="text-sm text-gray-500">{fileSizeMB} MB</span>
+        <span className="text-sm text-gray-500">{(session.credits_used ?? 0).toFixed(0)} credits</span>
       </td>
       <td className="py-4">
-        <span className="text-sm text-gray-500">{session.numPages} pages</span>
+        <span className="text-sm text-gray-500">${(session.cost_usd ?? 0).toFixed(2)} USD</span>
       </td>
       <td className="py-4 pr-4 text-right">
         <div className="flex items-center justify-end gap-2">

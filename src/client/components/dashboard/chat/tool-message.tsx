@@ -10,19 +10,24 @@ interface ToolMessage extends ChatMessage {
 }
 
 const toolDisplayConfig: { [key: string]: { label: string; activeLabel: string; icon: any } } = {
-  read_pdf: { 
-    label: "Analyzed PDF document", 
-    activeLabel: "Reading document layout...", 
-    icon: FileText 
-  },
-  write_pdf: { 
-    label: "Applied edits to PDF", 
-    activeLabel: "Applying magical edits...", 
+  write_file: { 
+    label: "Generated CAD code", 
+    activeLabel: "Writing Python design code...", 
     icon: Wrench 
   },
-  manage_user_memory: { 
-    label: "Updated your preferences", 
-    activeLabel: "Vibing with the PDF...", 
+  view_file: { 
+    label: "Inspected design code", 
+    activeLabel: "Reading design file...", 
+    icon: FileText 
+  },
+  bash: { 
+    label: "Rendered 3D geometry", 
+    activeLabel: "Executing CAD engine...", 
+    icon: BrainCircuit 
+  },
+  run_command: { 
+    label: "Executed design test", 
+    activeLabel: "Running validation tests...", 
     icon: BrainCircuit 
   },
 };

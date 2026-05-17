@@ -1,71 +1,42 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import PdfDropzone from "@/client/components/pdf-dropzone";
+import Link from "next/link";
+import { Sparkles, LogIn, Box } from "lucide-react";
+import { Button } from "@/client/components/ui/button";
+import { Typography } from "@/client/components/ui/typography";
 
 export function HeroSection() {
-  const router = useRouter();
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleFileUpload = async (file: File) => {
-    setUploadError(null);
-    setIsLoading(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.status === 401) {
-        return router.push("/login");
-      }
-
-      if (!response.ok) {
-        throw new Error("Failed to upload PDF");
-      }
-
-      const { sessionId } = await response.json();
-
-      // Redirect to session page
-      router.push(`/session/${sessionId}`);
-    } catch (error) {
-      setUploadError(error instanceof Error ? error.message : "Upload failed");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <div className="w-full max-w-4xl mx-auto py-12 px-4">
-      <div className="text-center mb-10 space-y-4">
-        <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 tracking-tight">
-          Start a new{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600">
-            conversation
-          </span>
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Upload a PDF to get started. Our AI will analyze it and help you fill it out in seconds.
-        </p>
+    <div className="w-full max-w-md mx-auto py-12 px-6 bg-white border border-gray-100 rounded-3xl shadow-xl text-center space-y-6">
+      <div className="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto">
+        <Box className="w-8 h-8 text-yellow-600 animate-pulse" />
       </div>
 
-      <PdfDropzone onFileUpload={handleFileUpload} uploadError={uploadError} isLoading={isLoading} />
+      <div className="space-y-2">
+        <Typography variant="h3" className="font-bold">
+          Welcome to Lattice
+        </Typography>
+        <Typography variant="muted">
+          Your personal AI coding agent for creating real watertight 3D models.
+        </Typography>
+      </div>
 
-      <p className="text-xs text-center mt-8 text-gray-400">
-        By uploading a PDF, you agree to our{" "}
-        <a href="#" className="underline hover:text-gray-900 transition-colors">
+      <Button asChild variant="brand" className="w-full h-12 rounded-xl font-semibold shadow-lg shadow-yellow-500/10">
+        <Link href="/login">
+          <LogIn className="w-5 h-5 mr-2" />
+          Sign In to Get Started
+        </Link>
+      </Button>
+
+      <p className="text-xs text-gray-400">
+        By signing in, you agree to our{" "}
+        <Link href="/terms" className="underline hover:text-gray-900 transition-colors">
           Terms of Service
-        </a>{" "}
+        </Link>{" "}
         and{" "}
-        <a href="#" className="underline hover:text-gray-900 transition-colors">
+        <Link href="/privacy" className="underline hover:text-gray-900 transition-colors">
           Privacy Policy
-        </a>
+        </Link>
         .
       </p>
     </div>

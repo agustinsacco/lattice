@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import { ChatMessage } from "@/common/types";
-import { INITIAL_PDF_PROMPT } from "@/common/config";
 
 // Helper to generate unique IDs for messages
 const generateUniqueId = (prefix: string = "msg") =>
@@ -75,10 +74,8 @@ export function useChatMessages(messages: ChatMessage[]) {
       ? messages
       : (messages as any)?.messages || [];
 
-    // 1. Pre-process: Filter out auto-prompts and parse tool content
-    const baseMessages = rawList
-      .filter((msg: ChatMessage) => !(msg?.role === "user" && msg?.content === INITIAL_PDF_PROMPT))
-      .map(tryParseToolContent);
+    // 1. Pre-process: Parse tool content
+    const baseMessages = rawList.map(tryParseToolContent);
 
     const newMessages: ChatMessage[] = [];
     const usedIndices = new Set<number>();
@@ -139,34 +136,7 @@ export function useChatMessages(messages: ChatMessage[]) {
       }
     }
 
-    // 3. Inject Restore Points
-    const finalMessages: ChatMessage[] = [];
-    newMessages.forEach((msg, idx) => {
-      if (msg.type === "grouped-tool" && (msg as any).toolCall?.toolName === "write_pdf") {
-        try {
-          const toolOutput = (msg as any).toolResult?.toolOutput;
-          const versionNumber =
-            typeof toolOutput === "object"
-              ? toolOutput?.versionNumber
-              : JSON.parse(toolOutput || "{}")?.versionNumber;
-
-          if (versionNumber) {
-            finalMessages.push({
-              id: generateUniqueId(`restore-${idx}`),
-              role: "system",
-              type: "restore-point",
-              versionNumber: versionNumber - 1,
-              content: "",
-            } as any);
-          }
-        } catch (e) {
-          console.warn("Failed to extract version number for restore point:", e);
-        }
-      }
-      finalMessages.push(msg);
-    });
-
-    return finalMessages;
+    return newMessages;
   }, [messages]);
 
   return processedMessages;

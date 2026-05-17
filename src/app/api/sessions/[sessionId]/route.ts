@@ -48,7 +48,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ sessionI
  * Deletes a session and its associated data.
  *
  * This route handles the deletion of a session, including all its messages and
- * the associated PDF file from storage. It ensures that only the authenticated
+ * the associated CAD models from storage. It ensures that only the authenticated
  * user who owns the session can perform the deletion.
  *
  * @param req - The NextRequest object

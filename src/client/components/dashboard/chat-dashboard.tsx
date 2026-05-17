@@ -24,7 +24,7 @@ export function ChatDashboard({
 }: ChatDashboardProps) {
   const router = useRouter();
 
-  const { socket, isConnected, sendMessage, isAgentLoading, pdfReloadKey } = useSocket();
+  const { socket, isConnected, sendMessage, isAgentLoading, modelReloadKey } = useSocket();
 
   // Fetch chat messages and session metadata
   const { data: chatMessages = [], isLoading: isLoadingMessages } = useMessages(sessionId);
@@ -65,7 +65,7 @@ export function ChatDashboard({
 
         {/* 3D Model Viewer Section */}
         <div className="flex-1 min-w-0 bg-gray-950 relative p-4">
-          <ModelViewer sessionId={sessionId} reloadKey={pdfReloadKey} />
+          <ModelViewer sessionId={sessionId} reloadKey={modelReloadKey} />
         </div>
       </div>
 

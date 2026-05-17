@@ -7,32 +7,25 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { RefreshCw, AlertCircle } from "lucide-react";
 import { ToolExecutionMessage } from "./tool-message";
-import { RestorePoint } from "./restore-point";
 
-interface PDFChatMessageProps {
+interface LatticeChatMessageProps {
   message: ChatMessage;
-  onRestore: (versionNumber: number) => void;
   onImageClick: (src: string) => void;
   onRetry: (message: ChatMessage) => void;
   isLastMessage: boolean;
   isLoading: boolean;
 }
 
-export function PDFChatMessage({
+export function LatticeChatMessage({
   message,
-  onRestore,
   onImageClick,
   onRetry,
   isLastMessage,
   isLoading,
-}: PDFChatMessageProps) {
-  const isRestorePoint = (message as any).type === "restore-point";
-  const restoreVersion = (message as any).versionNumber;
+}: LatticeChatMessageProps) {
   const isOutgoing = message.role === "user";
 
   const contentToRender = useMemo(() => {
-    if (isRestorePoint) return null;
-
     let contentParts: any[] | null = null;
 
     if (Array.isArray(message.content)) {
@@ -106,11 +99,7 @@ export function PDFChatMessage({
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{stringContent}</ReactMarkdown>
       </div>
     );
-  }, [message.content, isRestorePoint, onImageClick]);
-
-  if (isRestorePoint) {
-    return <RestorePoint versionNumber={restoreVersion} onRestore={onRestore} />;
-  }
+  }, [message.content, onImageClick]);
 
   if (message.type === "grouped-tool") {
     return <ToolExecutionMessage toolCall={(message as any).toolCall} toolResult={(message as any).toolResult} status={(message as any).status} />;

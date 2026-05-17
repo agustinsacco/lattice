@@ -20,9 +20,9 @@ interface SocketContextType {
   sendMessage: (message: string, sessionId: string, attachments?: ChatMessageAttachment[]) => void;
   isAgentLoading: boolean;
   toolStatus: { toolName: string; status: "start" | "end" } | null;
-  isPdfUpdating: boolean;
-  pdfReloadKey: number;
-  triggerPdfReload: () => void;
+  isModelUpdating: boolean;
+  modelReloadKey: number;
+  triggerModelReload: () => void;
 }
 
 // Create the context with a default value
@@ -58,11 +58,11 @@ export const SocketProvider = ({ sessionId, children }: SocketProviderProps) => 
   const [error, setError] = useState<Error | null>(null);
   const [isAgentLoading, setIsAgentLoading] = useState(false);
   const [toolStatus, setToolStatus] = useState<{ toolName: string; status: "start" | "end" } | null>(null);
-  const [isPdfUpdating, setIsPdfUpdating] = useState(false);
-  const [pdfReloadKey, setPdfReloadKey] = useState(0);
+  const [isModelUpdating, setIsModelUpdating] = useState(false);
+  const [modelReloadKey, setModelReloadKey] = useState(0);
 
-  const triggerPdfReload = useCallback(() => {
-    setPdfReloadKey((prev) => prev + 1);
+  const triggerModelReload = useCallback(() => {
+    setModelReloadKey((prev) => prev + 1);
   }, []);
 
   const queryClient = useQueryClient();
@@ -181,10 +181,10 @@ export const SocketProvider = ({ sessionId, children }: SocketProviderProps) => 
         );
       });
 
-      newSocket.on("pdfUpdated", () => {
-        setPdfReloadKey((prev) => prev + 1);
-        setIsPdfUpdating(false);
-        queryClient.invalidateQueries({ queryKey: ["pdf", sessionId] });
+      newSocket.on("modelUpdated", () => {
+        setModelReloadKey((prev) => prev + 1);
+        setIsModelUpdating(false);
+        queryClient.invalidateQueries({ queryKey: ["model", sessionId] });
       });
 
       newSocket.on("agentLoading", ({ isLoading }: { isLoading: boolean }) => {
@@ -198,7 +198,7 @@ export const SocketProvider = ({ sessionId, children }: SocketProviderProps) => 
       newSocket.on("toolStatus", (status: { toolName: string; status: "start" | "end" }) => {
         if (status.status === "start") {
           setToolStatus(status);
-          if (status.toolName === "write_pdf") setIsPdfUpdating(true);
+          if (status.toolName === "write_file" || status.toolName === "bash") setIsModelUpdating(true);
         } else {
           setToolStatus(null);
         }
@@ -303,11 +303,11 @@ export const SocketProvider = ({ sessionId, children }: SocketProviderProps) => 
       sendMessage,
       isAgentLoading,
       toolStatus,
-      isPdfUpdating,
-      pdfReloadKey,
-      triggerPdfReload,
+      isModelUpdating,
+      modelReloadKey,
+      triggerModelReload,
     }),
-    [socket, isConnected, error, sendMessage, isAgentLoading, toolStatus, isPdfUpdating, pdfReloadKey, triggerPdfReload]
+    [socket, isConnected, error, sendMessage, isAgentLoading, toolStatus, isModelUpdating, modelReloadKey, triggerModelReload]
   );
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
