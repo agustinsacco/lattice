@@ -12,8 +12,9 @@ ADD COLUMN IF NOT EXISTS name TEXT NOT NULL DEFAULT 'New Design',
 ADD COLUMN IF NOT EXISTS conversation_log TEXT;
 
 -- Drop obsolete tables
-DROP TABLE IF EXISTS pdf_versions;
-DROP TABLE IF EXISTS signatures;
+DROP TABLE IF EXISTS pdf_versions CASCADE;
+DROP TABLE IF EXISTS signatures CASCADE;
+DROP TABLE IF EXISTS user_memory CASCADE;
 
 -- Update the storage bucket name or ensure it exists via config if possible, 
 -- but SQL usually doesn't manage storage buckets directly in Supabase without extensions.
