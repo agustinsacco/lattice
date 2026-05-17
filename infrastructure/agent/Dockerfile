@@ -1,6 +1,6 @@
 # Base Image: Python + Node.js
-# Using python:3.10-slim-bookworm as a stable base
-FROM python:3.10-slim-bookworm
+# Using python:3.11-slim-bookworm as a stable base
+FROM python:3.11-slim-bookworm
 
 # Install system dependencies for OpenCascade (OCP), build123d, and Node.js
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -43,7 +43,7 @@ RUN pip install -e /app/cad_engine || true
 # or just ensure it's in the PYTHONPATH.
 
 # Set PYTHONPATH to include /app so "import cad_engine" works natively
-ENV PYTHONPATH="/app:${PYTHONPATH}"
+ENV PYTHONPATH="/app"
 
 # Install the agent bridge dependencies
 # Assuming we will have a package.json in the bridge folder

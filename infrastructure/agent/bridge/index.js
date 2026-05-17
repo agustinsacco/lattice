@@ -1,7 +1,7 @@
-const express = require("express");
-const { spawn } = require("child_process");
-const fs = require("fs");
-const path = require("path");
+import express from "express";
+import { spawn } from "child_process";
+import fs from "fs";
+import path from "path";
 
 const app = express();
 app.use(express.json());
@@ -88,14 +88,14 @@ app.post("/run", (req, res) => {
  */
 app.get("/artifacts", (req, res) => {
   const artifacts = {
-    log: "",
+    sessionLog: "",
     code: "",
-    stlBase64: null,
+    modelStlBase64: null,
   };
 
   try {
     if (fs.existsSync(LOG_FILE)) {
-      artifacts.log = fs.readFileSync(LOG_FILE, "utf8");
+      artifacts.sessionLog = fs.readFileSync(LOG_FILE, "utf8");
     }
 
     const designFile = path.join(WORKSPACE_DIR, "design.py");
@@ -106,7 +106,7 @@ app.get("/artifacts", (req, res) => {
     // The agent exports the STL to /workspace/outputs/model.stl (as per generator)
     const stlFile = path.join(WORKSPACE_DIR, "outputs", "model.stl");
     if (fs.existsSync(stlFile)) {
-      artifacts.stlBase64 = fs.readFileSync(stlFile).toString("base64");
+      artifacts.modelStlBase64 = fs.readFileSync(stlFile).toString("base64");
     }
 
     res.json(artifacts);

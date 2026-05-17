@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Bridge to control pi agent in isolated sandboxes",
   "main": "index.js",
+  "type": "module",
   "dependencies": {
     "express": "^4.19.2"
   }

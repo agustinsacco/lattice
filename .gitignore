@@ -49,6 +49,7 @@ out/
 next-env.d.ts
 .env*.local
 .env
+# Next.js environment & local binaries
 .env.local
 *.tsbuildinfo
-
+bin/
