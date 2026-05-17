@@ -1,0 +1,9 @@
+{
+  "name": "lattice-agent-bridge",
+  "version": "1.0.0",
+  "description": "Bridge to control pi agent in isolated sandboxes",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
