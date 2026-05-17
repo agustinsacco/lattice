@@ -33,6 +33,13 @@ app.post("/run", (req, res) => {
     fs.writeFileSync(designFile, "# Start building your 3D model here\nfrom build123d import *\n");
   }
 
+  // Clear previous output artifacts to guarantee atomicity (prevent stale/doubled-up STLs on failure)
+  const outputsDir = path.join(WORKSPACE_DIR, "outputs");
+  if (fs.existsSync(outputsDir)) {
+    fs.rmSync(outputsDir, { recursive: true, force: true });
+  }
+  fs.mkdirSync(outputsDir, { recursive: true });
+
   // 3. Spawn the pi agent
   // We call the 'pi' CLI. We assume it is installed globally or in the bridge.
   // We pass the workspace, the log, and the new user prompt.
