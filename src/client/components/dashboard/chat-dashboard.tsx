@@ -50,8 +50,13 @@ export function ChatDashboard({
 
       {/* Main Content Area */}
       <div className="flex-1 flex min-w-0">
+        {/* 3D Model Viewer Section */}
+        <div className="flex-1 min-w-0 bg-gray-950 relative p-4">
+          <ModelViewer sessionId={sessionId} reloadKey={modelReloadKey} />
+        </div>
+
         {/* Chat Section */}
-        <div className="w-[450px] flex-shrink-0 flex flex-col border-r border-gray-200 bg-white print:hidden">
+        <div className="w-[450px] flex-shrink-0 flex flex-col border-l border-gray-200 bg-white print:hidden">
           <ChatInterface
             sessionId={sessionId}
             messages={chatMessages}
@@ -61,11 +66,6 @@ export function ChatDashboard({
             onToggleCustomerInfo={() => {}}
             sessionCost={sessionMetadata.cost_usd ?? 0}
           />
-        </div>
-
-        {/* 3D Model Viewer Section */}
-        <div className="flex-1 min-w-0 bg-gray-950 relative p-4">
-          <ModelViewer sessionId={sessionId} reloadKey={modelReloadKey} />
         </div>
       </div>
 
