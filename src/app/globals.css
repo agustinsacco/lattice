@@ -36,9 +36,9 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --color-brand-primary: #FFF242;
-  --color-brand-secondary: #F7941E;
-  --color-brand-dark: #000000;
+  --color-brand-primary: #fbbf24;
+  --color-brand-secondary: #d97706;
+  --color-brand-dark: #09090b;
 }
 
 :root {

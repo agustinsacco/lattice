@@ -65,27 +65,49 @@ export function AppSidebar() {
           isCollapsed ? "w-16" : "w-80"
         )}
       >
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-          {!isCollapsed && (
+        {/* Brand Header */}
+        {!isCollapsed ? (
+          <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2.5 bg-white">
+            <img src="/logo.png" alt="Lattice Logo" className="w-7 h-7 rounded-lg shadow-sm" />
+            <Typography variant="h4" className="font-extrabold tracking-tight text-gray-900 flex-1">
+              Lattice
+            </Typography>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-gray-400 hover:text-gray-600"
+              onClick={() => setIsCollapsed(true)}
+            >
+              <Sidebar className="w-4 h-4" />
+            </Button>
+          </div>
+        ) : (
+          <div className="py-4 border-b border-gray-100 flex flex-col items-center gap-4 bg-white">
+            <img src="/logo.png" alt="Lattice Logo" className="w-7 h-7 rounded-lg shadow-sm" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-gray-400 hover:text-gray-600"
+              onClick={() => setIsCollapsed(false)}
+            >
+              <Sidebar className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
+
+        {!isCollapsed && (
+          <div className="p-4 border-b border-gray-200 flex items-center justify-between">
             <Button
               onClick={handleNewChat}
               variant="brand"
-              className="flex-1 mr-2 rounded-xl h-9"
+              className="flex-1 rounded-xl h-9"
               size="sm"
             >
               <Plus className="w-4 h-4 mr-2" />
               New Chat
             </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn("h-8 w-8", isCollapsed && "mx-auto")}
-            onClick={() => setIsCollapsed(!isCollapsed)}
-          >
-            <Sidebar className="w-4 h-4" />
-          </Button>
-        </div>
+          </div>
+        )}
 
         {isCollapsed && (
           <div className="p-2 border-b border-gray-200 flex justify-center">
