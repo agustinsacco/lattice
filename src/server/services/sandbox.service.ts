@@ -53,6 +53,9 @@ export class SandboxService {
     const podName = `agent-${sessionId.substring(0, 8)}-${uuidv4().substring(0, 4)}`;
     const namespace = "lattice-sandboxes";
 
+    // Ensure namespace exists programmatically in the cluster
+    await this.ensureNamespaceExists(namespace);
+
     // 1. Get the current session log (JSONL)
     const sessionLog = await getSessionLog(sessionId, userId);
 
@@ -296,6 +299,26 @@ export class SandboxService {
       await networkingApi.createNamespacedNetworkPolicy({ namespace: "lattice-sandboxes", body: policy });
     } catch (e) {
       console.warn("[SandboxService] Failed to apply NetworkPolicy. Proceeding without isolation.");
+    }
+  }
+
+  private async ensureNamespaceExists(namespace: string): Promise<void> {
+    try {
+      await this.k8sApi.readNamespace({ name: namespace });
+    } catch (error) {
+      console.log(`[SandboxService] Namespace ${namespace} not found. Creating it...`);
+      try {
+        await this.k8sApi.createNamespace({
+          body: {
+            metadata: {
+              name: namespace,
+            },
+          },
+        });
+      } catch (createError) {
+        console.error(`[SandboxService] Failed to create namespace ${namespace}:`, createError);
+        throw createError;
+      }
     }
   }
 }
