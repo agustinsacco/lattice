@@ -47,13 +47,13 @@ export function SessionCard({ session }: SessionCardProps) {
   return (
     <Link 
       href={`/session/${session.id}`}
-      className="group relative bg-white border border-gray-100 rounded-3xl p-6 transition-all duration-300 hover:border-yellow-400 hover:shadow-2xl hover:shadow-yellow-500/10 hover:-translate-y-1 overflow-hidden"
+      className="group relative bg-white border border-gray-100 rounded-3xl p-6 transition-all duration-300 hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 overflow-hidden"
     >
       {/* Background Glow */}
-      <div className="absolute -right-10 -top-10 w-32 h-32 bg-yellow-500/5 rounded-full blur-3xl transition-all group-hover:bg-yellow-500/10" />
+      <div className="absolute -right-10 -top-10 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl transition-all group-hover:bg-blue-500/10" />
       
       <div className="flex items-start justify-between mb-6 relative">
-        <div className="p-4 bg-gray-50 rounded-2xl group-hover:bg-yellow-500 group-hover:text-black transition-all duration-300">
+        <div className="p-4 bg-gray-50 rounded-2xl group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
           <Box className="w-8 h-8" />
         </div>
 
@@ -77,7 +77,7 @@ export function SessionCard({ session }: SessionCardProps) {
       </div>
 
       <div className="space-y-2 mb-6">
-        <Typography variant="h4" className="line-clamp-1 group-hover:text-yellow-600 transition-colors">
+        <Typography variant="h4" className="line-clamp-1 group-hover:text-blue-600 transition-colors">
           {session.name || "Untitled Project"}
         </Typography>
         <div className="flex items-center gap-3 text-sm text-gray-400">
@@ -105,7 +105,7 @@ export function SessionCard({ session }: SessionCardProps) {
           <Typography variant="tiny">Cost: ${(session.cost_usd ?? 0).toFixed(2)}</Typography>
         </div>
 
-        <div className="flex items-center text-yellow-500 font-bold text-sm group-hover:translate-x-1 transition-transform">
+        <div className="flex items-center text-blue-500 font-bold text-sm group-hover:translate-x-1 transition-transform">
           Open Canvas
           <ArrowRight className="w-4 h-4 ml-1" />
         </div>
@@ -113,7 +113,7 @@ export function SessionCard({ session }: SessionCardProps) {
 
       {isDeletingThis && (
         <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center rounded-3xl animate-in fade-in">
-          <Loader2 className="w-8 h-8 text-yellow-500 animate-spin" />
+          <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
         </div>
       )}
     </Link>

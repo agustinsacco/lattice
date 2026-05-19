@@ -52,7 +52,7 @@ export function UserSessionsSection() {
             <Link
               key={session.id}
               href={`/session/${session.id}`}
-              className="group relative block p-6 rounded-xl border border-gray-200 bg-white hover:border-yellow-400 hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 hover:-translate-y-1"
+              className="group relative block p-6 rounded-xl border border-gray-200 bg-white hover:border-blue-500 hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 hover:-translate-y-1"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">

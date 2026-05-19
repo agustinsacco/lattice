@@ -25,7 +25,7 @@ const Section = React.forwardRef<HTMLElement, SectionProps>(
           {
             "bg-white": background === "white",
             "bg-gray-50/50": background === "muted",
-            "bg-yellow-50/30": background === "brand",
+            "bg-blue-50/30": background === "brand",
           },
           {
             "border-t border-gray-100": border === "top" || border === "both",

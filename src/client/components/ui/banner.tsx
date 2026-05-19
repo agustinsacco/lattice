@@ -11,7 +11,7 @@ const bannerVariants = cva(
     variants: {
       variant: {
         info: "bg-blue-50 border-blue-100 text-blue-800",
-        brand: "bg-yellow-50 border-yellow-200 text-yellow-900",
+        brand: "bg-blue-50 border-blue-100 text-blue-900",
         success: "bg-green-50 border-green-100 text-green-800",
         warning: "bg-orange-50 border-orange-100 text-orange-800",
         error: "bg-red-50 border-red-100 text-red-800",

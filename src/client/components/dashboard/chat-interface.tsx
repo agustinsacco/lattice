@@ -250,8 +250,8 @@ export function ChatInterface({
             <div className="p-4 space-y-4">
               {processedMessages.length === 0 ? (
                 <div className="text-center py-16 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                  <div className="w-20 h-20 bg-yellow-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <MessageSquare size={40} className="text-brand-primary opacity-50" />
+                  <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                    <MessageSquare size={40} className="text-blue-500 opacity-50" />
                   </div>
                   <Typography variant="h3" className="mb-2">
                     {isLoading ? "Spinning up sandbox..." : "Ready to Model"}
@@ -369,7 +369,7 @@ export function ChatInterface({
                 type="submit"
                 size="icon"
                 variant="brand"
-                className="rounded-xl h-11 w-11 flex-shrink-0 shadow-lg shadow-yellow-500/20"
+                className="rounded-xl h-11 w-11 flex-shrink-0 shadow-lg shadow-blue-500/20"
                 disabled={
                   isLoading ||
                   (!message.trim() && attachments.length === 0) ||

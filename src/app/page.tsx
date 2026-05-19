@@ -26,7 +26,7 @@ export default function Home() {
     <div className="flex-1 flex flex-col">
       {/* Hero + CTA Section */}
       <Section spacing="large" className="relative overflow-visible">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-yellow-200/40 via-white to-white" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-200/30 via-white to-white" />
 
         <Container size="small" className="text-center space-y-10">
           {/* Hero Copy */}
@@ -38,7 +38,7 @@ export default function Home() {
             
             <Typography variant="h1" className="leading-[1.1]">
               Build 3D models with AI.{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-700">
                 Just describe it.
               </span>
             </Typography>
@@ -90,7 +90,7 @@ export default function Home() {
                 },
               ].map((item, i) => (
                 <div key={i} className="flex gap-5">
-                  <div className="shrink-0 w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-secondary">
+                  <div className="shrink-0 w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
                     <item.icon className="w-6 h-6" />
                   </div>
                   <div>
@@ -104,14 +104,14 @@ export default function Home() {
 
           {/* Mockup Chat Card */}
           <div className="relative group animate-in fade-in slide-in-from-right-8 duration-1000 delay-400">
-            <div className="absolute inset-0 bg-yellow-200 rounded-3xl blur-3xl opacity-20 -rotate-3 transition-transform group-hover:rotate-3 duration-1000" />
+            <div className="absolute inset-0 bg-blue-200 rounded-3xl blur-3xl opacity-20 -rotate-3 transition-transform group-hover:rotate-3 duration-1000" />
 
             <div className="relative bg-white border border-gray-200 shadow-xl rounded-3xl p-6 space-y-5">
               {/* File header */}
               <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-yellow-50 flex items-center justify-center">
-                    <Box className="h-6 w-6 text-yellow-600" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                    <Box className="h-6 w-6 text-blue-600" />
                   </div>
                   <div className="text-left">
                     <Typography variant="small" className="font-bold">Bracket_Design.stl</Typography>
@@ -129,7 +129,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex justify-start">
-                  <div className="bg-yellow-400 rounded-2xl rounded-tl-sm px-4 py-2.5 text-[11px] font-medium text-gray-900 max-w-[85%]">
+                  <div className="bg-blue-600 rounded-2xl rounded-tl-sm px-4 py-2.5 text-[11px] font-medium text-white max-w-[85%]">
                     Done! I've executed a build123d script in the sandbox to build the bracket and generated the 3D STL model.
                   </div>
                 </div>
@@ -143,9 +143,9 @@ export default function Home() {
               {/* Login Gate Overlay */}
               {!user && (
                 <div className="absolute inset-4 top-16 flex items-center justify-center z-20">
-                  <div className="bg-white/95 backdrop-blur-md border border-yellow-200 p-8 rounded-2xl shadow-xl text-center space-y-4 max-w-[280px]">
-                    <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto">
-                      <Lock className="w-6 h-6 text-brand-secondary" />
+                  <div className="bg-white/95 backdrop-blur-md border border-blue-100 p-8 rounded-2xl shadow-xl text-center space-y-4 max-w-[280px]">
+                    <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto">
+                      <Lock className="w-6 h-6 text-blue-600" />
                     </div>
                     <Typography variant="h4">Login to start modeling</Typography>
                     <Typography variant="small" className="text-gray-500 leading-relaxed">

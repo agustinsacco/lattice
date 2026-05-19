@@ -88,7 +88,7 @@ export default async function AdminDashboardPage() {
           title="Inferred Margin"
           value={`~${inferredMarginPercent.toFixed(1)}%`}
           subtitle="Profit on AI Usage"
-          icon={<PieChart className="w-5 h-5 text-yellow-500" />}
+          icon={<PieChart className="w-5 h-5 text-sky-500" />}
         />
       </div>
 
@@ -111,9 +111,9 @@ export default async function AdminDashboardPage() {
                 Finally, we convert that back to credits ($0.003 * 10,000 = 30 credits deducted).
               </p>
             </div>
-            <div className="col-span-2 bg-yellow-50 p-4 rounded-xl border border-yellow-100 mt-2">
-              <p className="font-semibold text-yellow-900 mb-2">The Real Margin</p>
-              <p className="text-yellow-800">
+            <div className="col-span-2 bg-blue-50 p-4 rounded-xl border border-blue-100 mt-2">
+              <p className="font-semibold text-blue-900 mb-2">The Real Margin</p>
+              <p className="text-blue-800">
                 Because of the massive token-level economics, even if you offer a "40% bonus" on large credit packages
                 (like $25 for 350,000 credits), the actual raw cost to you (paid to Google) per credit is a tiny fraction of a cent. 
                 <br /><br />

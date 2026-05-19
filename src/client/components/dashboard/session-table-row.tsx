@@ -43,10 +43,10 @@ export function SessionTableRow({ session }: SessionTableRowProps) {
     <tr className="group hover:bg-gray-50/50 transition-all cursor-pointer relative">
       <td className="py-4 pl-4">
         <Link href={`/session/${session.id}`} className="flex items-center gap-3">
-          <div className="p-2 bg-gray-50 rounded-lg text-gray-400 group-hover:bg-yellow-100 group-hover:text-yellow-600 transition-all">
+          <div className="p-2 bg-gray-50 rounded-lg text-gray-400 group-hover:bg-blue-100 group-hover:text-blue-600 transition-all">
             <Box className="w-5 h-5" />
           </div>
-          <span className="font-semibold text-gray-900 group-hover:text-yellow-600 transition-colors">
+          <span className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
             {session.name || "Untitled Project"}
           </span>
         </Link>
@@ -65,7 +65,7 @@ export function SessionTableRow({ session }: SessionTableRowProps) {
       <td className="py-4 pr-4 text-right">
         <div className="flex items-center justify-end gap-2">
           <Link href={`/session/${session.id}`}>
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg text-gray-400 hover:text-yellow-600 hover:bg-yellow-50">
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50">
               <ExternalLink className="w-4 h-4" />
             </Button>
           </Link>
@@ -91,7 +91,7 @@ export function SessionTableRow({ session }: SessionTableRowProps) {
       
       {isDeletingThis && (
         <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center animate-in fade-in">
-          <Loader2 className="w-5 h-5 text-yellow-500 animate-spin" />
+          <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
         </div>
       )}
     </tr>

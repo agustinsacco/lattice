@@ -76,14 +76,14 @@ export function ProfileForm() {
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Enter your name"
-            className="font-sans focus:ring-2 focus:ring-yellow-400/50"
+            className="font-sans focus:ring-2 focus:ring-blue-500/50"
           />
         </div>
 
         <Button
           type="submit"
           disabled={isLoading}
-          className="bg-yellow-400 hover:bg-yellow-300 text-gray-900 rounded-xl shadow-lg shadow-yellow-400/20 hover:scale-105 transition-all duration-300 font-sans font-medium"
+          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-500/20 hover:scale-105 transition-all duration-300 font-sans font-medium"
         >
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Save Changes

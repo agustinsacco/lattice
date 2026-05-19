@@ -154,7 +154,7 @@ export function AppSidebar() {
                         "group flex items-center p-2 rounded-xl text-sm transition-all duration-200",
                         currentSessionId === session.id
                           ? "bg-white shadow-sm border border-gray-200 text-gray-900 font-medium"
-                          : "text-gray-600 hover:bg-yellow-50 hover:text-yellow-900",
+                          : "text-gray-600 hover:bg-blue-50 hover:text-blue-900",
                         isCollapsed ? "justify-center" : "justify-between"
                       )}
                     >
@@ -168,7 +168,7 @@ export function AppSidebar() {
                           className={cn(
                             "w-4 h-4 flex-shrink-0",
                             currentSessionId === session.id
-                              ? "text-yellow-500"
+                              ? "text-blue-500"
                               : "text-gray-400 group-hover:text-gray-500"
                           )}
                         />
@@ -227,7 +227,7 @@ export function AppSidebar() {
 
         <div className="p-4 border-t border-gray-200 bg-white">
           <div className={cn("flex items-center gap-3", isCollapsed && "justify-center")}>
-            <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold text-xs flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs flex-shrink-0">
               LA
             </div>
             {!isCollapsed && (

@@ -22,7 +22,7 @@ function ModelMesh({ url }: ModelMeshProps) {
     <mesh geometry={geom} castShadow receiveShadow>
       <meshStandardMaterial
         ref={materialRef}
-        color="#fbbf24" // Bright premium gold/amber color
+        color="#38bdf8" // Premium metallic light blue
         roughness={0.2}
         metalness={0.8}
       />
@@ -114,7 +114,7 @@ export function ModelViewer({ sessionId, reloadKey }: ModelViewerProps) {
       <div className="flex-1 w-full h-full">
         {loading ? (
           <div className="h-full w-full flex flex-col items-center justify-center gap-4">
-            <Loader2 className="w-10 h-10 animate-spin text-yellow-400" />
+            <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
             <Typography variant="muted" className="text-gray-400">
               Retrieving generated 3D geometry...
             </Typography>
@@ -135,7 +135,7 @@ export function ModelViewer({ sessionId, reloadKey }: ModelViewerProps) {
           <Suspense
             fallback={
               <div className="h-full w-full flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-yellow-400" />
+                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
               </div>
             }
           >

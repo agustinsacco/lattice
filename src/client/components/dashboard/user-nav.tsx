@@ -30,7 +30,7 @@ export function UserNav() {
     return (
       <Button
         asChild
-        className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 rounded-xl shadow-lg shadow-yellow-400/20 hover:scale-105 transition-all duration-200"
+        className="bg-blue-600 text-white hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-500/20 hover:scale-105 transition-all duration-200"
       >
         <a href="/login" className="flex items-center space-x-2">
           <Star size={16} />

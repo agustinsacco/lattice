@@ -54,16 +54,16 @@ export function SettingsContent() {
               <CardDescription className="font-sans">View your credit balance and purchase more tokens.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-center justify-between p-6 bg-yellow-50 rounded-xl border border-yellow-100">
+              <div className="flex items-center justify-between p-6 bg-blue-50/50 rounded-xl border border-blue-100">
                 <div>
-                  <p className="text-sm font-medium text-yellow-800 font-sans">Current Balance</p>
-                  <h3 className="text-3xl font-bold text-yellow-900 mt-1 font-heading">
+                  <p className="text-sm font-medium text-blue-800 font-sans">Current Balance</p>
+                  <h3 className="text-3xl font-bold text-blue-900 mt-1 font-heading">
                     {isLoadingCredits ? "..." : (credits?.toFixed(2) ?? "0.00")}
                   </h3>
                 </div>
                 <Button
                   onClick={openModal}
-                  className="bg-yellow-400 hover:bg-yellow-300 text-gray-900 rounded-xl shadow-lg shadow-yellow-400/20 hover:scale-105 transition-all duration-300 font-sans font-medium"
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-500/20 hover:scale-105 transition-all duration-300 font-sans font-medium"
                 >
                   Add Credits
                 </Button>

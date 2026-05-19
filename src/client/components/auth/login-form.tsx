@@ -112,7 +112,7 @@ export default function LoginForm({ redirectTo = "/dashboard" }: LoginFormProps)
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-gray-50 border-gray-200 focus:ring-yellow-400/50"
+                className="bg-gray-50 border-gray-200 focus:ring-blue-500/50"
               />
             </div>
             <Button
@@ -139,7 +139,7 @@ export default function LoginForm({ redirectTo = "/dashboard" }: LoginFormProps)
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-gray-50 border-gray-200 focus:ring-yellow-400/50"
+                className="bg-gray-50 border-gray-200 focus:ring-blue-500/50"
               />
             </div>
             <div className="space-y-2">
@@ -153,7 +153,7 @@ export default function LoginForm({ redirectTo = "/dashboard" }: LoginFormProps)
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-gray-50 border-gray-200 focus:ring-yellow-400/50"
+                className="bg-gray-50 border-gray-200 focus:ring-blue-500/50"
               />
             </div>
             <Button

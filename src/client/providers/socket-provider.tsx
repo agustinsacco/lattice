@@ -224,7 +224,7 @@ export const SocketProvider = ({ sessionId, children }: SocketProviderProps) => 
                   openModal();
                   toast.dismiss(t);
                 }}
-                className="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-medium py-2.5 rounded-xl transition-colors"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl transition-colors"
               >
                 Add Credits
               </button>

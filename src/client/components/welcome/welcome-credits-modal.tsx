@@ -21,12 +21,11 @@ export function WelcomeCreditsModal({ isOpen, onClose, balance }: WelcomeCredits
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden gap-0 bg-white rounded-xl sm:rounded-xl border border-gray-200 shadow-2xl">
         {/* Header with celebration */}
-        {/* Header with celebration */}
-        <div className="bg-gradient-to-br from-yellow-400 via-yellow-300 to-yellow-400 p-8 text-center">
+        <div className="bg-gradient-to-br from-blue-600 via-blue-500 to-sky-400 p-8 text-center text-white">
           <div className="text-6xl mb-4 animate-bounce">🎉</div>
-          <DialogTitle className="text-3xl font-heading font-bold text-gray-900 mb-2">Welcome to Lattice!</DialogTitle>
-          <DialogDescription className="text-lg font-sans text-gray-800 font-medium">
-            You've received <span className="font-bold text-gray-900">{Math.floor(balance).toLocaleString()} free credits</span> to get started
+          <DialogTitle className="text-3xl font-heading font-bold text-white mb-2">Welcome to Lattice!</DialogTitle>
+          <DialogDescription className="text-lg font-sans text-white/90 font-medium">
+            You've received <span className="font-bold text-white">{Math.floor(balance).toLocaleString()} free credits</span> to get started
           </DialogDescription>
         </div>
 
@@ -44,19 +43,19 @@ export function WelcomeCreditsModal({ isOpen, onClose, balance }: WelcomeCredits
 
           {/* Information */}
           <div className="space-y-3 text-center font-sans">
-            <p className="text-base text-gray-700">Start uploading and filling your PDFs immediately!</p>
+            <p className="text-base text-gray-700">Start generating and previewing your 3D models immediately!</p>
             <p className="text-sm text-muted-foreground">
-              Our AI assistant will guide you through any form, making paperwork effortless.
+              Our AI assistant will build 3D CAD models from your text descriptions.
             </p>
           </div>
 
           {/* Call to action - Primary Button style */}
           <Button
             onClick={onClose}
-            className="w-full h-12 text-lg font-sans bg-yellow-400 text-gray-900 hover:bg-yellow-300 shadow-lg shadow-yellow-400/20 rounded-xl font-semibold transition-all duration-200 hover:scale-105"
+            className="w-full h-12 text-lg font-sans bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20 rounded-xl font-semibold transition-all duration-200 hover:scale-105"
             size="lg"
           >
-            Start Filling PDFs ✨
+            Start Modeling in 3D ✨
           </Button>
         </div>
       </DialogContent>

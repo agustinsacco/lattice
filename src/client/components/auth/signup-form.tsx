@@ -76,7 +76,7 @@ export default function SignupForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="bg-gray-50 border-gray-200 focus:ring-yellow-400/50"
+            className="bg-gray-50 border-gray-200 focus:ring-blue-500/50"
           />
         </div>
         <div className="space-y-2">
@@ -91,7 +91,7 @@ export default function SignupForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={6}
-            className="bg-gray-50 border-gray-200 focus:ring-yellow-400/50"
+            className="bg-gray-50 border-gray-200 focus:ring-blue-500/50"
           />
         </div>
         <div className="space-y-2">
@@ -106,13 +106,13 @@ export default function SignupForm() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             minLength={6}
-            className="bg-gray-50 border-gray-200 focus:ring-yellow-400/50"
+            className="bg-gray-50 border-gray-200 focus:ring-blue-500/50"
           />
         </div>
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold shadow-lg shadow-yellow-400/20"
+          className="w-full bg-blue-600 text-white hover:bg-blue-700 font-semibold shadow-lg shadow-blue-500/20"
         >
           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign Up"}
         </Button>

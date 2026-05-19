@@ -17,9 +17,9 @@ module.exports = {
       },
       colors: {
         brand: {
-          primary: "#fbbf24",
-          secondary: "#d97706",
-          dark: "#09090b",
+          primary: "#2563eb",
+          secondary: "#38bdf8",
+          dark: "#0f172a",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

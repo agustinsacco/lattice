@@ -20,9 +20,9 @@ export function FullPageLoader({ isLoading, message, className }: FullPageLoader
     >
       <div className="flex flex-col items-center space-y-6 animate-in fade-in zoom-in duration-300">
         <div className="relative">
-          <div className="absolute inset-0 bg-yellow-400 blur-xl opacity-20 rounded-full animate-pulse" />
+          <div className="absolute inset-0 bg-blue-600 blur-xl opacity-20 rounded-full animate-pulse" />
           <div className="relative bg-white p-4 rounded-2xl shadow-lg border border-gray-100">
-            <Loader2 className="h-8 w-8 animate-spin text-yellow-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
           </div>
         </div>
 

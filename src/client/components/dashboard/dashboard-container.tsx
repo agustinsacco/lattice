@@ -106,7 +106,7 @@ export function DashboardContainer({ user }: { user: User | null }) {
         <div className="flex items-center gap-3">
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-xl px-6 h-12 transition-all shadow-lg shadow-yellow-500/20 hover:shadow-yellow-500/40">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl px-6 h-12 transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40">
                 <Plus className="w-5 h-5 mr-2" />
                 New Design Project
               </Button>
@@ -135,7 +135,7 @@ export function DashboardContainer({ user }: { user: User | null }) {
                 <Button 
                   type="submit" 
                   disabled={isCreating}
-                  className="w-full h-12 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-xl flex items-center justify-center gap-2"
+                  className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl flex items-center justify-center gap-2"
                 >
                   {isCreating ? (
                     <>
@@ -173,7 +173,7 @@ export function DashboardContainer({ user }: { user: User | null }) {
           </div>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-yellow-50 text-yellow-600 rounded-xl">
+          <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
             <Clock className="w-6 h-6" />
           </div>
           <div>
@@ -181,9 +181,9 @@ export function DashboardContainer({ user }: { user: User | null }) {
             <Typography variant="h3">{stats.recentlyUpdated}</Typography>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group cursor-pointer hover:border-yellow-400 transition-all">
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group cursor-pointer hover:border-blue-400 transition-all">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-purple-50 text-purple-600 rounded-xl group-hover:bg-yellow-50 group-hover:text-yellow-600 transition-all">
+            <div className="p-3 bg-purple-50 text-purple-600 rounded-xl group-hover:bg-blue-50 group-hover:text-blue-600 transition-all">
               <Filter className="w-6 h-6" />
             </div>
             <div>
@@ -191,7 +191,7 @@ export function DashboardContainer({ user }: { user: User | null }) {
               <Typography variant="small" className="font-bold">All Models</Typography>
             </div>
           </div>
-          <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-yellow-500 transition-all" />
+          <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-all" />
         </div>
       </div>
 
@@ -276,7 +276,7 @@ export function DashboardContainer({ user }: { user: User | null }) {
               {!searchQuery && (
                 <Button 
                   onClick={() => setIsCreateOpen(true)}
-                  className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-xl"
+                  className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl"
                 >
                   Create New Workspace
                 </Button>

@@ -112,20 +112,20 @@ export function CreditsModalProvider({ children }: { children: React.ReactNode }
         <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden gap-0 bg-white rounded-[2rem] border border-gray-100 shadow-2xl">
           <DialogHeader className="p-8 pb-4">
             <Typography variant="h2">Lattice Credits</Typography>
-            <Typography variant="muted" className="mt-1">Purchase credits to power your AI-enhanced PDFs.</Typography>
+            <Typography variant="muted" className="mt-1">Purchase credits to power your AI-enhanced 3D CAD designs.</Typography>
           </DialogHeader>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="px-6 border-b border-gray-200">
               <TabsList className="grid w-full grid-cols-2 bg-transparent h-auto p-0">
                 <TabsTrigger
                   value="buy"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-yellow-400 data-[state=active]:text-gray-900 data-[state=active]:shadow-none rounded-none px-4 py-3 bg-transparent text-gray-500 hover:text-gray-900 transition-colors"
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-gray-900 data-[state=active]:shadow-none rounded-none px-4 py-3 bg-transparent text-gray-500 hover:text-gray-900 transition-colors"
                 >
                   Buy Credits
                 </TabsTrigger>
                 <TabsTrigger
                   value="history"
-                  className="data-[state=active]:border-b-2 data-[state=active]:border-yellow-400 data-[state=active]:text-gray-900 data-[state=active]:shadow-none rounded-none px-4 py-3 bg-transparent text-gray-500 hover:text-gray-900 transition-colors"
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-gray-900 data-[state=active]:shadow-none rounded-none px-4 py-3 bg-transparent text-gray-500 hover:text-gray-900 transition-colors"
                 >
                   History
                 </TabsTrigger>
@@ -145,7 +145,7 @@ export function CreditsModalProvider({ children }: { children: React.ReactNode }
                 </div>
                 <div className="flex -space-x-1">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="w-6 h-6 rounded-full bg-yellow-400 border-2 border-white" />
+                    <div key={i} className="w-6 h-6 rounded-full bg-blue-600 border-2 border-white" />
                   ))}
                 </div>
               </div>
@@ -159,12 +159,12 @@ export function CreditsModalProvider({ children }: { children: React.ReactNode }
                       disabled={createCheckoutSession.isPending}
                       className={`relative flex flex-col p-4 rounded-xl border-2 transition-all text-left cursor-pointer ${
                         pkg.badge
-                          ? "border-yellow-400 bg-yellow-50/30 ring-1 ring-yellow-400/20"
-                          : "border-gray-100 bg-white hover:border-yellow-200"
+                          ? "border-blue-500 bg-blue-50/30 ring-1 ring-blue-500/20"
+                          : "border-gray-100 bg-white hover:border-blue-200"
                       } hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed group`}
                     >
                       {pkg.badge && (
-                        <div className="absolute -top-2 left-2 px-2 py-0.5 bg-yellow-400 text-[9px] font-black uppercase tracking-tighter rounded-md shadow-sm">
+                        <div className="absolute -top-2 left-2 px-2 py-0.5 bg-blue-600 text-[9px] font-black uppercase tracking-tighter rounded-md shadow-sm">
                           {pkg.badge}
                         </div>
                       )}
@@ -172,7 +172,7 @@ export function CreditsModalProvider({ children }: { children: React.ReactNode }
                         <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">{pkg.label}</h3>
                         <div className="flex items-baseline gap-1">
                           <span className="text-2xl font-black text-gray-900">${pkg.price}</span>
-                          {pkg.bonus && <span className="text-[10px] font-bold text-yellow-600">{pkg.bonus}</span>}
+                          {pkg.bonus && <span className="text-[10px] font-bold text-blue-600">{pkg.bonus}</span>}
                         </div>
                         <p className="text-[11px] text-gray-600 font-medium">
                           {pkg.credits.toLocaleString()} credits <br />
@@ -180,7 +180,7 @@ export function CreditsModalProvider({ children }: { children: React.ReactNode }
                       </div>
 
                       <div className="mt-4 flex items-center justify-between">
-                        <div className="h-8 w-8 rounded-full bg-gray-900 flex items-center justify-center group-hover:bg-yellow-500 transition-colors">
+                        <div className="h-8 w-8 rounded-full bg-gray-900 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
                           {selectedPackage === pkg.id && createCheckoutSession.isPending ? (
                             <Loader2 className="h-4 w-4 animate-spin text-white" />
                           ) : (
@@ -239,7 +239,7 @@ export function CreditsModalProvider({ children }: { children: React.ReactNode }
                         {transactions.map((tx) => (
                           <TableRow
                             key={tx.id}
-                            className="hover:bg-yellow-50/30 transition-colors border-gray-100 last:border-0 group"
+                            className="hover:bg-blue-50/30 transition-colors border-gray-100 last:border-0 group"
                           >
                             <TableCell className="py-4">
                               <Typography variant="small" className="text-gray-500 font-medium">
@@ -271,10 +271,10 @@ export function CreditsModalProvider({ children }: { children: React.ReactNode }
                               {tx.sessionId ? (
                                 <Link
                                   href={`/session/${tx.sessionId}`}
-                                  className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-900 hover:text-brand-primary transition-colors group/link"
+                                  className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-900 hover:text-blue-600 transition-colors group/link"
                                 >
                                   View Session
-                                  <ExternalLink className="w-3 h-3 text-gray-300 group-hover/link:text-brand-primary transition-colors" />
+                                  <ExternalLink className="w-3 h-3 text-gray-300 group-hover/link:text-blue-600 transition-colors" />
                                 </Link>
                               ) : (
                                 <Typography variant="tiny" className="text-gray-300">—</Typography>

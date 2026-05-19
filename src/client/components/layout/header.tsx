@@ -37,10 +37,10 @@ export function Header() {
                 Dashboard
               </Link>
               <div
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400/20 text-yellow-700 text-sm font-medium cursor-pointer hover:bg-yellow-400/30 transition-all active:scale-95"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-500/10 text-sky-700 text-sm font-medium cursor-pointer hover:bg-sky-500/20 transition-all active:scale-95"
                 onClick={handleCreditsClick}
               >
-                <div className={`w-2 h-2 rounded-full bg-yellow-500 ${isLoadingCredits ? "animate-pulse" : ""}`} />
+                <div className={`w-2 h-2 rounded-full bg-sky-500 ${isLoadingCredits ? "animate-pulse" : ""}`} />
                 <span>
                   {isLoadingCredits ? "Loading..." : `${credits ? Math.floor(credits).toLocaleString() : "0"} Credits`}
                 </span>
