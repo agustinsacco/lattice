@@ -34,7 +34,7 @@ jobs:
         with:
           filters: |
             agent:
-              - 'infrastructure/agent/**'
+              - 'sandbox/agent/**'
               - 'cad_engine/**'
               - 'requirements.txt'
             app:
@@ -84,4 +84,4 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build Docker Image
         run: |
-          docker build -t lattice-agent:test -f infrastructure/agent/Dockerfile .
+          docker build -t lattice-agent:test -f sandbox/agent/Dockerfile .

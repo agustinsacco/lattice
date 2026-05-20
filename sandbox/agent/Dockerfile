@@ -46,7 +46,7 @@ RUN pip install -e /app/cad_engine || true
 ENV PYTHONPATH="/app"
 
 # Copy the agent sandbox source code and install dependencies
-COPY infrastructure/agent/sandbox /app/sandbox
+COPY sandbox/agent /app/sandbox
 WORKDIR /app/sandbox
 RUN npm install
 

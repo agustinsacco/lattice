@@ -37,7 +37,7 @@ jobs:
         with:
           filters: |
             agent:
-              - 'infrastructure/agent/**'
+              - 'sandbox/agent/**'
               - 'cad_engine/**'
               - 'requirements.txt'
             app:
@@ -70,7 +70,7 @@ jobs:
           docker build \
             -t ${{ env.AGENT_IMAGE_NAME }}:${{ github.sha }} \
             -t ${{ env.AGENT_IMAGE_NAME }}:latest \
-            -f infrastructure/agent/Dockerfile .
+            -f sandbox/agent/Dockerfile .
           docker push ${{ env.AGENT_IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ env.AGENT_IMAGE_NAME }}:latest
 
