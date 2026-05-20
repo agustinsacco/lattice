@@ -88,6 +88,7 @@ export class SandboxService {
             {
               name: "agent",
               image: "lattice-agent:latest",
+              imagePullPolicy: "Never",
               ports: [
                 {
                   containerPort: 8080,
@@ -97,7 +98,8 @@ export class SandboxService {
               env: [
                 { name: "SESSION_ID", value: sessionId },
                 { name: "USER_ID", value: userId },
-                { name: "GOOGLE_API_KEY", value: process.env.GOOGLE_API_KEY || "" },
+                { name: "GOOGLE_API_KEY", value: process.env.GOOGLE_GENERATIVE_AI_API_KEY || "" },
+                { name: "GEMINI_API_KEY", value: process.env.GOOGLE_GENERATIVE_AI_API_KEY || "" },
               ],
               resources: {
                 limits: {
@@ -146,18 +148,35 @@ export class SandboxService {
 
   private async waitForPodRunning(podName: string, namespace: string, timeoutMs: number = 30000) {
     const start = Date.now();
+    let lastPhase = "Unknown";
     while (Date.now() - start < timeoutMs) {
-      const pod = await this.k8sApi.readNamespacedPodStatus({ name: podName, namespace });
-      const phase = pod.status?.phase;
-      if (phase === "Running") {
-        return;
-      }
-      if (phase === "Failed" || phase === "Unknown") {
-        throw new Error(`Pod failed to start. Phase: ${phase}`);
+      try {
+        const pod = await this.k8sApi.readNamespacedPodStatus({ name: podName, namespace });
+        lastPhase = pod.status?.phase || "Unknown";
+        if (lastPhase === "Running") {
+          return;
+        }
+        if (lastPhase === "Failed" || lastPhase === "Unknown") {
+          await this.debugPodFailure(podName, namespace);
+          throw new Error(`Pod failed to start. Phase: ${lastPhase}`);
+        }
+      } catch (err: any) {
+        // Ignore read errors during startup, might be transient
       }
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
-    throw new Error(`Timeout waiting for Pod ${podName} to start.`);
+    await this.debugPodFailure(podName, namespace);
+    throw new Error(`Timeout waiting for Pod ${podName} to start. Last phase: ${lastPhase}`);
+  }
+
+  private async debugPodFailure(podName: string, namespace: string) {
+    console.error(`[SandboxService] Debugging pod failure for ${podName}...`);
+    try {
+      const logs = await this.k8sApi.readNamespacedPodLog({ name: podName, namespace });
+      console.error(`[SandboxService] Pod Logs:\n${logs}`);
+    } catch (logErr) {
+      console.error(`[SandboxService] Could not fetch logs for ${podName}:`, logErr);
+    }
   }
 
   private async executeBridgeRun(port: number, sessionLog: string, prompt: string, sessionId: string, io: Server) {
@@ -178,6 +197,7 @@ export class SandboxService {
 
     const decoder = new TextDecoder();
     let buffer = "";
+    let assistantText = ""; // Accumulate streamed text deltas
 
     while (true) {
       const { done, value } = await reader.read();
@@ -188,22 +208,165 @@ export class SandboxService {
       buffer = lines.pop() || "";
 
       for (const line of lines) {
-        if (line.startsWith("data: ")) {
-          try {
-            const event = JSON.parse(line.substring(6));
-            if (event.type === "log") {
-              // Parse log to see if it's a tool event or standard stdout
-              console.log(`[Sandbox Log] ${event.data}`);
-              io.to(sessionId).emit("agentLog", { log: event.data });
-            } else if (event.type === "error") {
-              console.error(`[Sandbox Error] ${event.data}`);
-              io.to(sessionId).emit("agentError", { error: event.data });
-            }
-          } catch (e) {
-            // Non-JSON or malformed line
+        if (!line.startsWith("data: ")) continue;
+
+        try {
+          const ssePayload = JSON.parse(line.substring(6));
+
+          // Bridge-level events
+          if (ssePayload.type === "bridge_error") {
+            console.error(`[Sandbox Bridge Error] ${ssePayload.data}`);
+            io.to(sessionId).emit("error", { message: ssePayload.data });
+            continue;
           }
+
+          if (ssePayload.type === "bridge_status") {
+            console.log(`[Sandbox Bridge Status] ${JSON.stringify(ssePayload.data)}`);
+            continue;
+          }
+
+          // RPC events from pi
+          if (ssePayload.type !== "rpc_event") continue;
+
+          const rpcEvent = ssePayload.data;
+          this.handleRpcEvent(rpcEvent, sessionId, io, { assistantText: () => assistantText, setAssistantText: (t: string) => { assistantText = t; } });
+
+        } catch (e) {
+          // Non-JSON or malformed line — skip silently
         }
       }
+    }
+  }
+
+  /**
+   * Maps a pi RPC event to the Socket.IO events the frontend expects.
+   */
+  private handleRpcEvent(
+    event: any,
+    sessionId: string,
+    io: Server,
+    textAccumulator: { assistantText: () => string; setAssistantText: (t: string) => void }
+  ) {
+    switch (event.type) {
+      // === Agent Lifecycle ===
+      case "agent_start":
+        console.log(`[RPC] agent_start for session ${sessionId}`);
+        io.to(sessionId).emit("agentLoading", { isLoading: true });
+        textAccumulator.setAssistantText("");
+        break;
+
+      case "agent_end":
+        console.log(`[RPC] agent_end for session ${sessionId}`);
+        // Emit the final accumulated assistant message
+        const finalText = textAccumulator.assistantText();
+        if (finalText.trim()) {
+          io.to(sessionId).emit("agentMessage", {
+            id: `agent-${Date.now()}`,
+            sessionId,
+            role: "assistant",
+            content: finalText,
+            timestamp: Date.now(),
+            status: "confirmed",
+            type: "text",
+          });
+        }
+        io.to(sessionId).emit("agentLoading", { isLoading: false });
+        break;
+
+      // === Message Streaming ===
+      case "message_update": {
+        const delta = event.assistantMessageEvent;
+        if (!delta) break;
+
+        switch (delta.type) {
+          case "text_delta":
+            // Accumulate text for the final message
+            textAccumulator.setAssistantText(textAccumulator.assistantText() + delta.delta);
+            break;
+
+          case "toolcall_start":
+            // A tool call is starting — extract the tool name from the partial
+            const toolName = delta.partial?.name || "unknown";
+            console.log(`[RPC] toolcall_start: ${toolName}`);
+            io.to(sessionId).emit("toolStatus", { toolName, status: "start" });
+            break;
+
+          case "toolcall_end":
+            // Tool call definition is complete (arguments are ready)
+            const endToolName = delta.toolCall?.name || "unknown";
+            console.log(`[RPC] toolcall_end: ${endToolName}`);
+            break;
+
+          case "error":
+            console.error(`[RPC] message error: ${delta.reason}`);
+            io.to(sessionId).emit("error", { message: `Agent error: ${delta.reason || "unknown"}` });
+            break;
+        }
+        break;
+      }
+
+      // === Tool Execution ===
+      case "tool_execution_start":
+        console.log(`[RPC] tool_execution_start: ${event.toolName} (${event.toolCallId})`);
+        io.to(sessionId).emit("toolStatus", { toolName: event.toolName, status: "start" });
+        break;
+
+      case "tool_execution_update":
+        // Streaming partial tool output (e.g., bash stdout)
+        // Could be used for live terminal streaming in the future
+        break;
+
+      case "tool_execution_end":
+        console.log(`[RPC] tool_execution_end: ${event.toolName} (error=${event.isError})`);
+        io.to(sessionId).emit("toolStatus", { toolName: event.toolName, status: "end" });
+        break;
+
+      // === Turn Lifecycle ===
+      case "turn_start":
+        console.log(`[RPC] turn_start`);
+        break;
+
+      case "turn_end":
+        console.log(`[RPC] turn_end`);
+        break;
+
+      // === Session Events ===
+      case "compaction_start":
+        console.log(`[RPC] compaction_start (reason: ${event.reason})`);
+        break;
+
+      case "compaction_end":
+        console.log(`[RPC] compaction_end`);
+        break;
+
+      case "auto_retry_start":
+        console.log(`[RPC] auto_retry (attempt ${event.attempt}/${event.maxAttempts}): ${event.errorMessage}`);
+        break;
+
+      case "auto_retry_end":
+        console.log(`[RPC] auto_retry_end (success: ${event.success})`);
+        break;
+
+      case "extension_error":
+        console.error(`[RPC] extension_error: ${event.error}`);
+        break;
+
+      // === RPC Responses (to commands we sent) ===
+      case "response":
+        if (!event.success) {
+          console.error(`[RPC] Command "${event.command}" failed: ${event.error}`);
+          if (event.command === "prompt") {
+            io.to(sessionId).emit("error", { message: `Agent prompt failed: ${event.error}` });
+          }
+        } else {
+          console.log(`[RPC] Command "${event.command}" accepted`);
+        }
+        break;
+
+      default:
+        // Unknown event type — log for debugging
+        console.log(`[RPC] Unhandled event type: ${event.type}`);
+        break;
     }
   }
 
@@ -282,14 +445,17 @@ export class SandboxService {
         },
         policyTypes: ["Egress"],
         egress: [
+          // Allow DNS resolution (required for the agent to reach LLM APIs)
           {
-            to: [
-              {
-                ipBlock: {
-                  cidr: "0.0.0.0/0",
-                  except: ["0.0.0.0/0"],
-                },
-              },
+            ports: [
+              { protocol: "UDP", port: 53 },
+              { protocol: "TCP", port: 53 },
+            ],
+          },
+          // Allow HTTPS egress (required for Google Gemini API calls)
+          {
+            ports: [
+              { protocol: "TCP", port: 443 },
             ],
           },
         ],

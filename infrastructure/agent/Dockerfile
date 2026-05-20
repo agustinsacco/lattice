@@ -24,8 +24,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js 20 (required for the pi agent bridge)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+# Install Node.js 22 (required for the pi agent bridge and undici compatibility)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
@@ -45,11 +45,13 @@ RUN pip install -e /app/cad_engine || true
 # Set PYTHONPATH to include /app so "import cad_engine" works natively
 ENV PYTHONPATH="/app"
 
-# Install the agent bridge dependencies
-# Assuming we will have a package.json in the bridge folder
-COPY infrastructure/agent/bridge /app/bridge
-WORKDIR /app/bridge
+# Copy the agent sandbox source code and install dependencies
+COPY infrastructure/agent/sandbox /app/sandbox
+WORKDIR /app/sandbox
 RUN npm install
 
-# Set the entrypoint to run the bridge
-ENTRYPOINT ["node", "index.js"]
+# Compile TypeScript to JavaScript
+RUN npm run build
+
+# Set the entrypoint to run the sandbox controller
+ENTRYPOINT ["node", "dist/index.js"]

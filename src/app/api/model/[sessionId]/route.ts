@@ -34,9 +34,16 @@ export async function GET(
       .from(SUPABASE_BUCKET_NAME)
       .createSignedUrl(`${sessionId}/model.stl`, 300); // 5 minutes validity
 
-    if (error || !data) {
-      console.error("[ModelRoute] Failed to create signed URL:", error?.message);
+    if (error) {
+      if (error.message === "Object not found") {
+        return NextResponse.json({ url: null });
+      }
+      console.error("[ModelRoute] Failed to create signed URL:", error.message);
       return NextResponse.json({ error: "Model not found" }, { status: 404 });
+    }
+
+    if (!data) {
+      return NextResponse.json({ url: null });
     }
 
     return NextResponse.json({ url: data.signedUrl });

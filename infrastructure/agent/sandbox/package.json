@@ -1,0 +1,20 @@
+{
+  "name": "lattice-agent-sandbox",
+  "version": "1.0.0",
+  "description": "Sandbox controller for lattice agent",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "@earendil-works/pi-coding-agent": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/express": "^4.17.21",
+    "typescript": "^5.4.5"
+  }
+}
