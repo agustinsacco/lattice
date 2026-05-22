@@ -42,6 +42,11 @@ Thumbs.db
 # STL outputs (generated files - uncomment if you want to track them)
 # *.stl
 
+# Tooling
+.fusion/
+.nx/
+.gemini/
+
 # Node & Next.js
 node_modules/
 .next/

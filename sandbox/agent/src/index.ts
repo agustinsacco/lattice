@@ -59,7 +59,7 @@ interface RunRequestBody {
  * Spawns the pi coding agent in RPC mode and streams structured JSON events
  * back to the caller (SandboxService) over HTTP SSE.
  */
-app.post("/run", (req: Request<{}, {}, RunRequestBody>, res: Response) => {
+app.post("/run", (req: Request<object, object, RunRequestBody>, res: Response) => {
   const { prompt } = req.body;
 
   console.log(`[Sandbox] Starting RPC agent turn with prompt: "${prompt}"`);
@@ -110,7 +110,7 @@ app.post("/run", (req: Request<{}, {}, RunRequestBody>, res: Response) => {
         const event = JSON.parse(line);
         // Forward the full RPC event to the SandboxService
         sendEvent("rpc_event", event);
-      } catch (e) {
+      } catch (_e) {
         // Non-JSON output (startup messages, etc.) — log but don't crash
         console.log(`[Sandbox stdout] ${line}`);
       }
@@ -163,7 +163,7 @@ app.post("/run", (req: Request<{}, {}, RunRequestBody>, res: Response) => {
         if (agentProcess.stdin) {
           agentProcess.stdin.write(JSON.stringify({ type: "abort" }) + "\n");
         }
-      } catch (e) {
+      } catch (_e) {
         // stdin may already be closed
       }
       setTimeout(() => {

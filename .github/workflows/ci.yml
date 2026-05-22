@@ -1,87 +1,18 @@
 name: CI
-
 on:
   pull_request:
     branches: [main]
 
-concurrency:
-  group: ci-${{ github.head_ref }}
-  cancel-in-progress: true
-
-env:
-  # Mock env vars required by Next.js build
-  NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: mock-anon-key
-  SUPABASE_SERVICE_ROLE_KEY: mock-service-role-key
-  GOOGLE_GENERATIVE_AI_API_KEY: mock-gemini-key
-  STRIPE_SECRET_KEY: mock-stripe-secret-key
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: mock-stripe-publishable-key
-  STRIPE_WEBHOOK_SECRET: mock-stripe-webhook-secret
-  NEXT_PUBLIC_SOCKET_URL: http://localhost:3000
-  NEXT_PUBLIC_SITE_URL: http://localhost:3000
-
 jobs:
-  changes:
-    name: Detect Changes
+  main:
     runs-on: ubuntu-latest
-    outputs:
-      agent: ${{ steps.filter.outputs.agent }}
-      app: ${{ steps.filter.outputs.app }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: filter
         with:
-          filters: |
-            agent:
-              - 'sandbox/agent/**'
-              - 'cad_engine/**'
-              - 'requirements.txt'
-            app:
-              - 'src/**'
-              - 'public/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'tsconfig.json'
-              - 'next.config.ts'
-              - 'server.ts'
-              - 'eslint.config.mjs'
-
-  lint-app:
-    name: Lint App
-    needs: changes
-    if: ${{ needs.changes.outputs.app == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run lint
-
-  build-app:
-    name: Build App
-    needs: [changes, lint-app]
-    if: ${{ needs.changes.outputs.app == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-
-  build-agent:
-    name: Build Agent Sandbox
-    needs: changes
-    if: ${{ needs.changes.outputs.agent == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build Docker Image
-        run: |
-          docker build -t lattice-agent:test -f sandbox/agent/Dockerfile .
+      - run: npx nx affected -t lint test build --parallel=3

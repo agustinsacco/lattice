@@ -1,13 +1,9 @@
 name: Deploy
-
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 env:
-  APP_IMAGE_NAME: saccodigital/lattice
-  AGENT_IMAGE_NAME: saccodigital/lattice-agent
   # Supabase
   NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
   NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
@@ -24,95 +20,48 @@ env:
   NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
 
 jobs:
-  changes:
-    name: Detect Changes
+  get-affected:
     runs-on: ubuntu-latest
     outputs:
-      agent: ${{ steps.filter.outputs.agent }}
-      app: ${{ steps.filter.outputs.app }}
+      projects: ${{ steps.affected.outputs.projects }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: filter
         with:
-          filters: |
-            agent:
-              - 'sandbox/agent/**'
-              - 'cad_engine/**'
-              - 'requirements.txt'
-            app:
-              - 'src/**'
-              - 'public/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'tsconfig.json'
-              - 'next.config.ts'
-              - 'server.ts'
-              - 'eslint.config.mjs'
-
-  build-and-push-agent:
-    name: Build & Push Sandbox Agent
-    needs: changes
-    if: ${{ needs.changes.outputs.agent == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build \
-            -t ${{ env.AGENT_IMAGE_NAME }}:${{ github.sha }} \
-            -t ${{ env.AGENT_IMAGE_NAME }}:latest \
-            -f sandbox/agent/Dockerfile .
-          docker push ${{ env.AGENT_IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ env.AGENT_IMAGE_NAME }}:latest
-
-  build-and-push-app:
-    name: Build & Push Next.js App
-    needs: changes
-    if: ${{ needs.changes.outputs.app == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+      - run: npm ci
+      - id: affected
+        run: |
+          PROJECTS=$(npx nx show projects --affected --with-target push --base=origin/main~1 --head=origin/main --json)
+          echo "projects=$PROJECTS" >> $GITHUB_OUTPUT
 
-      - name: Install Dependencies
-        run: npm ci
+  build-push:
+    needs: get-affected
+    if: ${{ needs.get-affected.outputs.projects != '[]' && needs.get-affected.outputs.projects != '' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.get-affected.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
 
       - name: Run Supabase Migrations
+        if: ${{ matrix.project == 'web' }}
         env:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           npx supabase@latest db push --db-url "postgresql://postgres.${{ secrets.SUPABASE_PROJECT_REF }}:${SUPABASE_DB_PASSWORD}@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build \
-            --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} \
-            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} \
-            --build-arg NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }} \
-            --build-arg NEXT_PUBLIC_SOCKET_URL=${{ secrets.NEXT_PUBLIC_SOCKET_URL }} \
-            --build-arg NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_SITE_URL }} \
-            -t ${{ env.APP_IMAGE_NAME }}:${{ github.sha }} \
-            -t ${{ env.APP_IMAGE_NAME }}:latest .
-          docker push ${{ env.APP_IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ env.APP_IMAGE_NAME }}:latest
+      - run: npx nx push ${{ matrix.project }}

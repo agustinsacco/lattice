@@ -1,32 +1,59 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-import js from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier";
+import nx from '@nx/eslint-plugin';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-  eslintConfigPrettier,
+export default [
   {
-    ignores: [".next/**", "out/**", "build/**", "next-env.d.ts", "public/**"],
+    ignores: [
+      '**/dist',
+      '**/dist/**',
+      '**/.next',
+      '**/.next/**',
+      '**/node_modules',
+      '**/node_modules/**',
+      '**/out-tsc',
+      '**/coverage',
+      '.nx',
+      '**/next-env.d.ts',
+      '**/.vendor',
+      '**/.vendor/**',
+    ],
+  },
+  ...nx.configs['flat/base'],
+  ...nx.configs['flat/typescript'],
+  ...nx.configs['flat/javascript'],
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    rules: {
+      '@nx/enforce-module-boundaries': [
+        'error',
+        {
+          enforceBuildableLibDependency: true,
+          allow: [
+            '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'
+          ],
+          depConstraints: [
+            {
+              sourceTag: '*',
+              onlyDependOnLibsWithTags: ['*'],
+            },
+          ],
+        },
+      ],
+    },
   },
   {
+    files: [
+      '**/*.ts',
+      '**/*.tsx',
+      '**/*.cts',
+      '**/*.mts',
+      '**/*.js',
+      '**/*.jsx',
+      '**/*.cjs',
+      '**/*.mjs',
+    ],
+    // Override or add rules here
     rules: {
-      // Temporarily disable no-explicit-any to address other errors first
-      "@typescript-eslint/no-explicit-any": "off",
-      // Temporarily disable react/no-unescaped-entities for .tsx files
-      "react/no-unescaped-entities": "off",
-      "@typescript-eslint/no-unused-vars": "off",
+      '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^_', argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
     },
   },
 ];
-
-export default eslintConfig;
