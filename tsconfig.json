@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["apps/web/src/*"],
+      "@/client/*": ["apps/web/src/client/*"],
+      "@/server/*": ["apps/web/src/server/*"],
+      "@/common/*": ["apps/web/src/common/*"],
+      "@/components/*": ["apps/web/src/client/components/*"],
+      "@lattice/shared": ["libs/shared/src/index.ts"],
+      "@lattice/shared/*": ["libs/shared/src/*"],
+      "@lattice/ui": ["libs/ui/src/index.ts"],
+      "@lattice/ui/*": ["libs/ui/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
