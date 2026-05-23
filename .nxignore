@@ -1,0 +1,5 @@
+.worktrees/
+.fusion/
+.vendor/
+.venv/
+.gemini/
