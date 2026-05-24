@@ -1,6 +1,11 @@
-# Sandbox Debugging Workflow
+---
+name: sandbox-debug
+description: Instructions and troubleshooting steps for debugging K3d/K3s sandbox pods that are created dynamically via the SandboxService for executing agent CAD designs in the Lattice project. Use this skill when investigating sandbox failures, timeouts, or execution errors.
+---
 
-This workflow provides instructions on how to debug K3d/K3s sandbox pods that are created dynamically via the `SandboxService` for executing agent CAD designs.
+# Sandbox Debugging Skill
+
+This skill provides instructions on how to debug K3d/K3s sandbox pods that are created dynamically via the `SandboxService` for executing agent CAD designs.
 
 ## Overview
 
