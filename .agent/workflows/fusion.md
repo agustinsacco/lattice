@@ -6,6 +6,10 @@ description: Orchestrate RunFusion task management — plan work, create tasks, 
 
 You are the **planner and orchestrator**. Your job is to decompose user requests into well-scoped tasks and delegate them to the Fusion runtime for autonomous AI execution. You do NOT implement the tasks yourself — you create them in Fusion and monitor their progress.
 
+> [!IMPORTANT]
+> **Read-Only Inquiries & Investigation Constraint:**
+> When the user asks "what is going on," asks for an analysis, or requests an investigation/exploration, you must **only** observe, diagnose, and report. **Do NOT make any task updates, column moves, status changes, or code modifications** unless the user explicitly directs you to do so. Maintain a strict read-only posture during diagnostic inquiries.
+
 ## Project Context
 
 ```
@@ -25,6 +29,17 @@ Monorepo: Lattice (Nx workspace)
 **Stack**: Next.js 16 (Turbopack), React, TypeScript, Supabase, Tailwind CSS, Nx
 **Fusion Project**: Lattice (ID: proj_ad591ab747e44fb1)
 **CLI prefix**: `npx runfusion.ai` (no global install)
+
+## Fusion Diagnostics & Configuration Locations
+
+When analyzing or viewing agent memory, active/historical sessions, or board settings, look at these local file paths directly. Do **NOT** attempt to query SQLite databases or read NPM package source code:
+
+- **Agent Heartbeat Procedures:** Each agent has a `HEARTBEAT.md` file (e.g., `.fusion/agents/fullstack-engineer-agent-5ac3720d/HEARTBEAT.md`). This file is read directly by the agent on every tick and dictates their execution loop.
+- **Shared Project Memory:** `.fusion/memory/MEMORY.md` represents the long-term project knowledge and conventions.
+- **Agent-Specific Memory:** `.fusion/agent-memory/<agent-id>/MEMORY.md` contains the long-term memory for that specific agent.
+- **Daemon Configuration:** `.fusion/config.json` stores global settings, concurrence thresholds, and parameters, but not behavioral instructions.
+- **Task State & Configuration:** `.fusion/tasks/<task-id>/task.json` contains the structured task specifications, dependencies, and steps.
+- **Agent Session / Streamed Logs:** Streamed logs for agent runs are located at `.fusion/agents/<agent-id>-runlogs-run-<run-id>.jsonl`.
 
 ---
 
@@ -309,3 +324,56 @@ npx runfusion.ai task refine <id> --feedback "Change approach to use X instead o
 8. **Handle failures gracefully** — Check logs, diagnose, and either retry with guidance or recreate with better specs.
 9. **Respect the monorepo structure** — Tasks should respect the Nx workspace boundaries (apps/web, libs/shared, libs/ui).
 10. **One concern per task** — Don't mix UI work with API work with database migrations in a single task.
+
+---
+
+## 10. Internals: `.fusion/` Directory Layout & Monitoring
+
+For advanced monitoring, inspecting agent state, and debugging without blocking active executors, you can inspect files inside the `.fusion/` directory:
+
+### Directory Tree
+
+```
+.fusion/
+├── config.json                     # Daemon configuration (e.g., concurrency limits)
+├── tasks/
+│   └── <task-id>/                  # Folder for each task (e.g., FN-003)
+│       ├── task.json               # Full task state (status, current step, history)
+│       └── PROMPT.md               # Triage-generated instructions & acceptance criteria
+├── agents/
+│   ├── agent-<id>-runlogs-run-<id>.jsonl   # JSON lines streaming logs of agent thoughts & actions
+│   ├── fullstack-engineer-agent-<id>/     # Agent-specific directories
+│   ├── reviewer-agent-<id>/
+│   └── triage-agent-agent-<id>/
+├── agent-memory/
+│   └── <agent-id>/                 # Per-agent persistent memory folder
+│       ├── MEMORY.md               # Long-term memory & accumulated learnings
+│       ├── DREAMS.md               # Agent reflections / summary of work
+│       └── <yyyy-mm-dd>.md         # Daily journal logs
+└── memory/
+    └── MEMORY.md                   # Global project memory & architecture standards
+```
+
+### Key Configurations (`config.json`)
+
+- `globalMaxConcurrent`: The global limit on the number of concurrently running executor tasks. Defaults to `4`, but can be set to `2` to avoid overloading local execution.
+- `groupOverlappingFiles`: Automatically queues tasks that overlap in their file scopes.
+
+### Diagnostic Monitoring via Logs
+
+If you want to view what an active agent is doing step-by-step:
+1. Locate the latest modified `.jsonl` files in `.fusion/agents/`:
+   ```bash
+   ls -lt .fusion/agents/*.jsonl | head -n 5
+   ```
+2. Read or stream the JSON lines from the active log file:
+   ```bash
+   tail -n 20 .fusion/agents/agent-<id>-runlogs-run-<id>.jsonl
+   ```
+   Each line contains:
+   - `timestamp`: ISO8601 string.
+   - `text`: Thought text, tool names, or console messages.
+   - `type`: `text`, `tool`, `tool_result`, or `tool_error`.
+   - `detail`: Tool arguments, results payload, or error descriptions.
+   - `agent`: Agent identity (`executor`, `triage`, `reviewer`).
+
