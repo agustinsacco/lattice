@@ -40,7 +40,7 @@ wheels/
 Thumbs.db
 
 # STL outputs (generated files - uncomment if you want to track them)
-# *.stl
+*.stl
 
 # Tooling
 .fusion/
