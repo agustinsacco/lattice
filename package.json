@@ -6,9 +6,9 @@
     "dev": "nx run web:serve",
     "build": "nx run web:build",
     "start": "nx run web:start",
-    "stop": "nx run web:services-stop",
-    "services:start": "nx run web:services-start",
-    "services:stop": "nx run web:services-stop",
+    "stop": "nx run supabase:stop",
+    "services:start": "nx run supabase:init",
+    "services:stop": "nx run supabase:stop",
     "lint": "nx run-many -t lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "test": "nx run-many -t test"

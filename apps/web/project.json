@@ -9,24 +9,12 @@
         "outputPath": "dist/apps/web"
       }
     },
-    "services-start": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npx supabase start && tsx scripts/init-storage.ts"
-      }
-    },
-    "services-stop": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npx supabase stop && kubectl delete pods --all -n lattice-sandboxes"
-      }
-    },
     "serve": {
       "executor": "nx:run-commands",
       "options": {
         "command": "nodemon --watch 'apps/web/src' --watch 'apps/web/server.ts' --ext 'ts,json' --exec 'tsx --tsconfig tsconfig.json --env-file apps/web/.env.local apps/web/server.ts'"
       },
-      "dependsOn": ["services-start"]
+      "dependsOn": ["supabase:init"]
     },
     "start": {
       "executor": "nx:run-commands",
@@ -50,5 +38,5 @@
       "executor": "@nx/eslint:lint"
     }
   },
-  "implicitDependencies": ["shared", "ui"]
+  "implicitDependencies": ["shared", "ui", "supabase"]
 }

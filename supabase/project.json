@@ -1,0 +1,41 @@
+{
+  "name": "supabase",
+  "projectType": "application",
+  "targets": {
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx supabase start"
+      }
+    },
+    "stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx supabase stop && kubectl delete pods --all -n lattice-sandboxes"
+      }
+    },
+    "reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx supabase db reset"
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx supabase db push --db-url \"$DATABASE_URL\""
+      }
+    },
+    "init-storage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/init-storage.ts"
+      },
+      "dependsOn": ["start"]
+    },
+    "init": {
+      "executor": "nx:noop",
+      "dependsOn": ["init-storage"]
+    }
+  }
+}
