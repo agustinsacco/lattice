@@ -3,16 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run services:start && nodemon --watch 'apps/web/src' --watch 'apps/web/server.ts' --ext 'ts,json' --exec 'tsx --tsconfig tsconfig.json --env-file apps/web/.env.local apps/web/server.ts'",
+    "dev": "nx run web:serve",
     "build": "nx run web:build",
-    "start": "NODE_ENV=production tsx apps/web/server.ts",
-    "stop": "npm run services:stop",
-    "services:start": "npx supabase start && npm run storage:init",
-    "services:stop": "npx supabase stop && kubectl delete pods --all -n lattice-sandboxes",
-    "storage:init": "tsx scripts/init-storage.ts",
-    "lint": "eslint",
+    "start": "nx run web:start",
+    "stop": "nx run web:services-stop",
+    "services:start": "nx run web:services-start",
+    "services:stop": "nx run web:services-stop",
+    "lint": "nx run-many -t lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
-    "test": "jest --passWithNoTests"
+    "test": "nx run-many -t test"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.23",

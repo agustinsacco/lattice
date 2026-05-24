@@ -9,18 +9,41 @@
         "outputPath": "dist/apps/web"
       }
     },
-    "serve": {
-      "executor": "@nx/next:server",
+    "services-start": {
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "web:build",
-        "dev": true,
-        "port": 3000
+        "command": "npx supabase start && tsx scripts/init-storage.ts"
+      }
+    },
+    "services-stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx supabase stop && kubectl delete pods --all -n lattice-sandboxes"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nodemon --watch 'apps/web/src' --watch 'apps/web/server.ts' --ext 'ts,json' --exec 'tsx --tsconfig tsconfig.json --env-file apps/web/.env.local apps/web/server.ts'"
+      },
+      "dependsOn": ["services-start"]
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_ENV=production tsx apps/web/server.ts"
       }
     },
     "push": {
       "executor": "nx:run-commands",
       "options": {
         "commands": ["docker build --build-arg NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY --build-arg NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY --build-arg NEXT_PUBLIC_SOCKET_URL=$NEXT_PUBLIC_SOCKET_URL --build-arg NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL -f apps/web/Dockerfile -t saccodigital/lattice:$GITHUB_SHA --push ."]
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "jest apps/web --passWithNoTests"
       }
     },
     "lint": {
