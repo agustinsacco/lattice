@@ -34,8 +34,9 @@ export async function GET(request: NextRequest, context: { params: Promise<{ ses
   try {
     const messagesData = await getMessages(sessionId, userId);
     return NextResponse.json({ sessionId: messagesData.sessionId, messages: messagesData.messages });
-  } catch (error: any) {
-    console.error(`[MessagesRoute] GET: Failed to get messages for session ${sessionId} (User: ${userId}):`, error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error(`[MessagesRoute] GET: Failed to get messages for session ${sessionId} (User: ${userId}):`, errorMessage);
     return NextResponse.json({ error: "Failed to retrieve messages." }, { status: 500 });
   }
 }
@@ -90,8 +91,9 @@ export async function POST(request: NextRequest, context: { params: Promise<{ se
     await appendMessage(sessionId, newMessage, userId);
 
     return NextResponse.json(newMessage, { status: 201 });
-  } catch (error: any) {
-    console.error(`[MessagesRoute] POST: Failed to add message to session ${sessionId} (User: ${userId}):`, error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error(`[MessagesRoute] POST: Failed to add message to session ${sessionId} (User: ${userId}):`, errorMessage);
     return NextResponse.json({ error: "Failed to add message." }, { status: 500 });
   }
 }

@@ -4,7 +4,11 @@ import Stripe from "stripe";
 import { PRICING_CONFIG } from "@lattice/shared/config";
 
 // Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeKey) {
+  throw new Error("STRIPE_SECRET_KEY is not set");
+}
+const stripe = new Stripe(stripeKey, {
   apiVersion: "2023-10-16",
 });
 

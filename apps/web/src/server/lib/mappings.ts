@@ -1,4 +1,4 @@
-import { ChatMessage, Session, Json } from "@lattice/shared/types";
+import { ChatMessage, Session, Json, type ChatMessageContent, type TokenUsage } from "@lattice/shared/types";
 import { Database, TablesInsert, TablesUpdate } from "@lattice/shared/types/database";
 
 type SessionRow = Database["public"]["Tables"]["sessions"]["Row"];
@@ -130,13 +130,13 @@ export function toChatMessage(row: MessageRow): ChatMessage {
   return {
     id: row.id,
     sessionId: row.session_id ?? undefined,
-    role: row.role as any,
-    content: parsedContent as any,
-    type: (row.type as any) ?? undefined,
+    role: row.role as "user" | "assistant" | "system" | "tool",
+    content: parsedContent as ChatMessageContent,
+    type: (row.type as "text" | "tool-call" | "tool-result" | "grouped-tool") ?? undefined,
     toolName: row.tool_name ?? undefined,
     toolInput: row.tool_input ?? undefined,
     toolOutput: row.tool_output ?? undefined,
-    tokenUsage: (row.token_usage as any) ?? undefined,
+    tokenUsage: row.token_usage ? (row.token_usage as unknown as TokenUsage) : undefined,
     attachments: parsedAttachments,
     timestamp: row.timestamp ? new Date(row.timestamp).getTime() : undefined,
   };

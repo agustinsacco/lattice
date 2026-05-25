@@ -3,11 +3,18 @@ import Stripe from "stripe";
 import { addCredits } from "@/server/services/credit.service";
 
 // Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeKey) {
+  throw new Error("STRIPE_SECRET_KEY is not set");
+}
+const stripe = new Stripe(stripeKey, {
   apiVersion: "2023-10-16",
 });
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+if (!webhookSecret) {
+  throw new Error("STRIPE_WEBHOOK_SECRET is not set");
+}
 
 export async function POST(request: NextRequest) {
   try {

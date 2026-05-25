@@ -38,8 +38,8 @@ export default function LoginForm({ redirectTo = "/dashboard" }: LoginFormProps)
       if (error) throw error;
 
       setMessage("Check your email for the magic link!");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsLoading(false);
     }
@@ -61,8 +61,8 @@ export default function LoginForm({ redirectTo = "/dashboard" }: LoginFormProps)
 
       router.refresh();
       router.push(redirectTo);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsLoading(false);
     }

@@ -13,14 +13,15 @@ const generateUniqueId = (prefix = "msg") =>
  */
 const normalizeMessage = (msg: ChatMessage) => {
   if (!msg) return null;
+  const raw = msg as unknown as Record<string, unknown>;
   return {
     ...msg,
     type: msg.type === "tool-result" ? "tool-response" : msg.type,
-    toolName: msg.toolName || (msg as any).tool_name,
-    toolInput: msg.toolInput || (msg as any).tool_input,
-    toolOutput: msg.toolOutput || (msg as any).tool_output,
-    tokenUsage: msg.tokenUsage || (msg as any).token_usage,
-  };
+    toolName: msg.toolName || (raw.tool_name as string | undefined),
+    toolInput: msg.toolInput || (raw.tool_input as unknown),
+    toolOutput: msg.toolOutput || (raw.tool_output as unknown),
+    tokenUsage: msg.tokenUsage || undefined,
+  } as ChatMessage;
 };
 
 /**
@@ -40,7 +41,7 @@ const tryParseToolContent = (msg: ChatMessage): ChatMessage => {
     if (!Array.isArray(parts)) return msg;
 
     if (isToolCall) {
-      const toolCall = parts.find((p: any) => p.type === "tool-call");
+      const toolCall = parts.find((p: Record<string, unknown>) => p.type === "tool-call");
       if (toolCall) {
         return {
           ...msg,
@@ -51,7 +52,7 @@ const tryParseToolContent = (msg: ChatMessage): ChatMessage => {
         };
       }
     } else if (isToolResult) {
-      const toolResult = parts.find((p: any) => p.type === "tool-result");
+      const toolResult = parts.find((p: Record<string, unknown>) => p.type === "tool-result");
       if (toolResult) {
         return {
           ...msg,
@@ -72,7 +73,7 @@ export function useChatMessages(messages: ChatMessage[]) {
   const processedMessages = useMemo(() => {
     const rawList = Array.isArray(messages)
       ? messages
-      : (messages as any)?.messages || [];
+      : ((messages as unknown as Record<string, unknown>)?.messages as ChatMessage[]) || [];
 
     // 1. Pre-process: Parse tool content
     const baseMessages = rawList.map(tryParseToolContent);
@@ -111,7 +112,7 @@ export function useChatMessages(messages: ChatMessage[]) {
             toolCall: msg,
             toolResult: nextMsg,
             content: "",
-          } as any);
+          } as unknown as ChatMessage);
         } else {
           // No response found yet, it's truly pending
           newMessages.push({
@@ -122,7 +123,7 @@ export function useChatMessages(messages: ChatMessage[]) {
             toolCall: msg,
             toolResult: null,
             content: "",
-          } as any);
+          } as unknown as ChatMessage);
         }
       } else if (msg.type === "tool-response") {
         // This is an orphaned response (shouldn't happen with our look-ahead)

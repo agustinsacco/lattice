@@ -254,12 +254,12 @@ export const SocketProvider = ({ sessionId, children }: SocketProviderProps) => 
   }, [sessionId, user, isAuthLoading, queryClient, openModal]);
 
   const sendMessage = useCallback(
-    (message: string, currentSessionId: string, attachments?: any[]) => {
+    (message: string, currentSessionId: string, attachments?: ChatMessageAttachment[]) => {
       if (isConnected && socketRef.current) {
         // Optimistically update the messages list
-        queryClient.setQueryData(["messages", currentSessionId], (old: any) => {
+        queryClient.setQueryData(["messages", currentSessionId], (old: Record<string, unknown> | undefined) => {
           const tempId = `optimistic-${Date.now()}`;
-          let content: any = message;
+          let content: unknown = message;
 
           if (attachments && attachments.length > 0) {
             content = [
@@ -282,9 +282,10 @@ export const SocketProvider = ({ sessionId, children }: SocketProviderProps) => 
             timestamp: Date.now(),
           };
           if (!old) return { sessionId: currentSessionId, messages: [newMessage] };
+          const oldMessages = (old.messages as ChatMessage[]) || [];
           return {
             ...old,
-            messages: [...(old.messages || []), newMessage],
+            messages: [...oldMessages, newMessage],
           };
         });
 

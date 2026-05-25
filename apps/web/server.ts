@@ -5,7 +5,7 @@ import { getUserFromAccessToken } from "./src/server/lib/auth";
 import { startAgentProcess } from "./src/server/services/agent.service";
 import { appendMessage } from "./src/server/services/session.service";
 import { v4 as uuidv4 } from "uuid";
-import { ChatMessage } from "@lattice/shared";
+import { ChatMessage, type ChatMessageContent } from "@lattice/shared";
 
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -30,8 +30,7 @@ app.prepare().then(() => {
     },
   });
 
-  // Share Socket.io instance globally
-  (global as any).io = io;
+  (globalThis as Record<string, unknown>).io = io;
 
   io.on("connection", async (socket) => {
     const { sessionId, accessToken } = socket.handshake.auth;
@@ -60,13 +59,13 @@ app.prepare().then(() => {
       console.log(`[Socket] Received message from user ${userId} for session ${sessionId}`);
 
       try {
-        let content: any = message;
+        let content: unknown = message;
 
         // If there are attachments, format as multi-part content
         if (attachments && attachments.length > 0) {
           content = [
             { type: "text", text: message },
-            ...attachments.map((att: any) => ({
+            ...attachments.map((att: Record<string, unknown>) => ({
               type: att.type,
               image: att.type === "image" ? att.data : undefined,
               data: att.type === "file" ? att.data : undefined,
@@ -80,7 +79,7 @@ app.prepare().then(() => {
         const userMessage: ChatMessage = {
           id: uuidv4(),
           role: "user",
-          content,
+          content: content as ChatMessageContent,
           timestamp: Date.now(),
         };
 

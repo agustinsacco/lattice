@@ -3,13 +3,13 @@
 import { Loader2, CheckCircle2, Wrench, FileText, BrainCircuit } from "lucide-react";
 import { ChatMessage } from "@lattice/shared/types";
 
-interface ToolMessage extends ChatMessage {
+export interface ToolMessage extends ChatMessage {
   toolName: string;
   toolInput?: unknown;
   toolOutput?: unknown;
 }
 
-const toolDisplayConfig: { [key: string]: { label: string; activeLabel: string; icon: any } } = {
+const toolDisplayConfig: { [key: string]: { label: string; activeLabel: string; icon: React.ComponentType } } = {
   write_file: { 
     label: "Generated CAD code", 
     activeLabel: "Writing Python design code...", 

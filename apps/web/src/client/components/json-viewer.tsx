@@ -3,7 +3,7 @@
 import React from "react";
 
 interface JsonViewerProps {
-  data: any;
+  data: unknown;
 }
 
 const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {

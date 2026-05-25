@@ -52,8 +52,8 @@ export function ModelViewer({ sessionId, reloadKey }: ModelViewerProps) {
       if (data.url) {
         setModelUrl(data.url);
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to load model.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err) || "Failed to load model.");
       setModelUrl(null);
     } finally {
       setLoading(false);

@@ -48,10 +48,11 @@ export async function GET(
       return NextResponse.json({ error: "Message not found." }, { status: 404 });
     }
     return NextResponse.json(message);
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error(
       `[MessagesIdRoute] GET: Failed to get message ${messageId} for session ${sessionId} (User: ${userId}):`,
-      error
+      errorMessage
     );
     return NextResponse.json({ error: "Failed to retrieve message." }, { status: 500 });
   }
@@ -107,10 +108,11 @@ export async function PUT(
 
     const updatedMessage = await updateMessage(sessionId, messageId, { content }, userId);
     return NextResponse.json(updatedMessage);
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error(
       `[MessagesIdRoute] PUT: Failed to update message ${messageId} for session ${sessionId} (User: ${userId}):`,
-      error
+      errorMessage
     );
     return NextResponse.json({ error: "Failed to update message." }, { status: 500 });
   }
@@ -156,10 +158,11 @@ export async function DELETE(
   try {
     const deletedId = await deleteMessage(sessionId, messageId, userId);
     return NextResponse.json({ success: true, deletedId });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error(
       `[MessagesIdRoute] DELETE: Failed to delete message ${messageId} for session ${sessionId} (User: ${userId}):`,
-      error
+      errorMessage
     );
     return NextResponse.json({ error: "Failed to delete message." }, { status: 500 });
   }

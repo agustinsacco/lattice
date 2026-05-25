@@ -20,8 +20,9 @@ export async function POST(req: Request) {
     const session = await createSession(userId, name);
 
     return NextResponse.json(session);
-  } catch (error: any) {
-    console.error("Error creating session:", error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error("Error creating session:", errorMessage);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

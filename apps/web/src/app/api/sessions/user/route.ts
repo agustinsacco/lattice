@@ -44,8 +44,9 @@ export async function GET() {
     }));
 
     return NextResponse.json({ sessions: transformedSessions });
-  } catch (error: any) {
-    console.error("Error in user sessions API:", error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error("Error in user sessions API:", errorMessage);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

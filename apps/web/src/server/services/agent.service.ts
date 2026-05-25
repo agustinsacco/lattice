@@ -312,8 +312,9 @@ export async function startAgentProcess(sessionId: string, userId: string, io: S
     // Note: The sandboxService should handle streaming logs back via Socket.io
     // and updating the session log in Supabase when finished.
     
-  } catch (error: any) {
-    console.error(`[AgentService] Error:`, error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`[AgentService] Error:`, errorMessage);
     io.to(sessionId).emit("error", { message: "Failed to start agent sandbox." });
     io.to(sessionId).emit("agentLoading", { isLoading: false });
   }

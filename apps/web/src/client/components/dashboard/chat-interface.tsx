@@ -105,8 +105,8 @@ export function ChatInterface({
         try {
           const parsed = JSON.parse(message.content);
           if (Array.isArray(parsed)) {
-            parsed.forEach((part: any) => {
-              if (part.type === "text") textContent += part.text;
+            parsed.forEach((part: Record<string, string | undefined>) => {
+              if (part.type === "text") textContent += part.text ?? "";
               if (part.type === "image" || part.type === "file") {
                 messageAttachments.push({
                   type: part.type,
@@ -124,14 +124,15 @@ export function ChatInterface({
         textContent = message.content;
       }
     } else if (Array.isArray(message.content)) {
-      message.content.forEach((part: any) => {
-        if (part.type === "text") textContent += part.text;
+      message.content.forEach((part) => {
+        if (part.type === "text") textContent += part.text ?? "";
         if (part.type === "image" || part.type === "file") {
+          const partRecord = part as unknown as Record<string, unknown>;
           messageAttachments.push({
             type: part.type,
-            data: part.image || part.data,
-            mediaType: part.mediaType,
-            filename: part.filename,
+            data: String(partRecord.image || partRecord.data),
+            mediaType: partRecord.mediaType as string | undefined,
+            filename: partRecord.filename as string | undefined,
           });
         }
       });
@@ -290,7 +291,7 @@ export function ChatInterface({
                     !(
                       processedMessages.length > 0 &&
                       processedMessages[processedMessages.length - 1].type === "grouped-tool" &&
-                      (processedMessages[processedMessages.length - 1] as any).status === "pending"
+                      (processedMessages[processedMessages.length - 1] as unknown as { status?: string }).status === "pending"
                     ) && (
                       <ProgressiveThinking />
                   )}

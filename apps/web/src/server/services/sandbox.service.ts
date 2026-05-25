@@ -65,7 +65,7 @@ export class SandboxService {
     const prompt = typeof lastUserMessage?.content === "string" 
       ? lastUserMessage.content 
       : Array.isArray(lastUserMessage?.content)
-        ? (lastUserMessage.content.find((p) => p.type === "text") as any)?.text || "Generate model"
+        ? ((lastUserMessage.content as unknown as Record<string, unknown>[]).find((p) => p.type === "text") as Record<string, unknown> | undefined)?.text as string || "Generate model"
         : "Generate model";
 
     // 3. Find a free port on the host
@@ -160,7 +160,7 @@ export class SandboxService {
           await this.debugPodFailure(podName, namespace);
           throw new Error(`Pod failed to start. Phase: ${lastPhase}`);
         }
-      } catch (_err: any) {
+      } catch (_err) {
         // Ignore read errors during startup, might be transient
       }
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -242,7 +242,7 @@ export class SandboxService {
    * Maps a pi RPC event to the Socket.IO events the frontend expects.
    */
   private handleRpcEvent(
-    event: any,
+    event: Record<string, unknown>,
     sessionId: string,
     io: Server,
     textAccumulator: { assistantText: () => string; setAssistantText: (t: string) => void }
@@ -276,7 +276,7 @@ export class SandboxService {
 
       // === Message Streaming ===
       case "message_update": {
-        const delta = event.assistantMessageEvent;
+        const delta = event.assistantMessageEvent as { type: string; delta?: string; partial?: { name?: string }; toolCall?: { name?: string }; toolOutput?: unknown; reason?: string };
         if (!delta) break;
 
         switch (delta.type) {

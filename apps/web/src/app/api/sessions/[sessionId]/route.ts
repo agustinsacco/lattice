@@ -38,8 +38,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ sessionI
       cost_usd: metadata.cost_usd,
       credits_used: metadata.credits_used,
     });
-  } catch (error: any) {
-    console.error(`Failed to get session metadata for ${sessionId}:`, error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error(`Failed to get session metadata for ${sessionId}:`, errorMessage);
     return NextResponse.json({ error: "Session not found or failed to load metadata." }, { status: 500 });
   }
 }
@@ -71,8 +72,9 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ sessi
     await deleteSession(sessionId, userId);
 
     return NextResponse.json({ message: "Session deleted successfully." }, { status: 200 });
-  } catch (error: any) {
-    console.error(`Failed to delete session ${sessionId}:`, error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error(`Failed to delete session ${sessionId}:`, errorMessage);
     return NextResponse.json({ error: "Failed to delete session." }, { status: 500 });
   }
 }

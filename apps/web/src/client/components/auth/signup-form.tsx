@@ -41,8 +41,8 @@ export default function SignupForm() {
       if (error) throw error;
 
       setMessage("Check your email to confirm your account");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsLoading(false);
     }

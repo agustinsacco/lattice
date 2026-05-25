@@ -34,7 +34,7 @@ const AttachmentPreview: React.FC<AttachmentPreviewProps> = ({ attachment, onRem
       )}
       {isInteractive && onRemove && (
         <button
-          onClick={() => onRemove(filename!)}
+          onClick={() => onRemove(filename)}
           className="absolute -top-1 -right-1 bg-black text-white rounded-full h-4 w-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <X className="h-3 w-3" />

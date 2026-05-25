@@ -99,7 +99,7 @@ app.post("/run", (req: Request<object, object, RunRequestBody>, res: Response) =
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  const sendEvent = (type: string, data: any) => {
+  const sendEvent = (type: string, data: unknown) => {
     res.write(`data: ${JSON.stringify({ type, data })}\n\n`);
   };
 

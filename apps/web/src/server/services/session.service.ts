@@ -229,14 +229,16 @@ export async function updateSessionCostAndCredits(
 export async function updateSessionCost(sessionId: string, costUsd: number, credits: number, _userId: string) {
   const supabase = supabaseAdmin;
 
-  const { error } = await supabase.rpc("increment_session_cost_v2" as any, {
+  const rpc = supabase.rpc as unknown as (fn: string, params: Record<string, unknown>) => Promise<{ error: unknown }>;
+  const { error } = await rpc("increment_session_cost_v2", {
     session_id_arg: sessionId,
     cost_increment: costUsd,
     credits_increment: credits,
   });
 
   if (error) {
-    console.error(`[SessionService] Atomic cost update failed for session ${sessionId}:`, error.message);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error(`[SessionService] Atomic cost update failed for session ${sessionId}:`, errorMsg);
   }
 }
 

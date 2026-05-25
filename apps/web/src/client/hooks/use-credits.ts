@@ -99,7 +99,7 @@ export function useCreditEvents() {
   useEffect(() => {
     if (!socket || !isConnected) return;
 
-    const handleUserCreditsUpdated = (data: { credits: number; transaction: any }) => {
+    const handleUserCreditsUpdated = (data: { credits: number; transaction: Record<string, unknown> }) => {
       // Update balance
       queryClient.setQueryData(["credits", "balance"], data.credits);
 
@@ -107,10 +107,10 @@ export function useCreditEvents() {
       // We need to be careful with the query keys.
       // 1. Global transactions
       queryClient.setQueryData<CreditTransaction[]>(["credits", "transactions", "all"], (old) => {
-        if (!old) return [data.transaction];
+        if (!old) return [data.transaction as unknown as CreditTransaction];
         // Avoid duplicates if possible, though ID check is better
         // Ensure sessionId is preserved from the event data
-        return [data.transaction, ...old];
+        return [data.transaction as unknown as CreditTransaction, ...old];
       });
 
       // 2. Session transactions (if we know the session ID from the transaction, but the event might not have it easily accessible in the generic handler unless we pass it)
